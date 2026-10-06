@@ -1,0 +1,2105 @@
+{
+  "organization_types": [
+    {
+      "type_name": "company",
+      "organization_type_id": 1,
+      "display_name": "Company",
+      "description": "Corporate and business organizations"
+    },
+    {
+      "type_name": "school",
+      "organization_type_id": 2,
+      "display_name": "School",
+      "description": "Schools and educational institutions"
+    },
+    {
+      "type_name": "college",
+      "organization_type_id": 3,
+      "display_name": "College / University",
+      "description": "Colleges and universities"
+    },
+    {
+      "type_name": "hospital",
+      "organization_type_id": 4,
+      "display_name": "Hospital",
+      "description": "Hospitals and healthcare organizations"
+    },
+    {
+      "type_name": "government",
+      "organization_type_id": 5,
+      "display_name": "Government Organization",
+      "description": "Government departments and public organizations"
+    },
+    {
+      "type_name": "ngo",
+      "organization_type_id": 6,
+      "display_name": "NGO",
+      "description": "Non-governmental and non-profit organizations"
+    },
+    {
+      "type_name": "other",
+      "organization_type_id": 7,
+      "display_name": "Other",
+      "description": "Other types of organizations"
+    }
+  ],
+  "organizations": [
+    {
+      "organization_code": "ABC-TECH-001",
+      "organization_name": "ABC Technologies Pvt. Ltd.",
+      "organization_type_id": 1,
+      "official_email": "admin@abctech.example",
+      "phone": "+91-9000000001",
+      "address": "Tech Park, Phase 1",
+      "city": "Bengaluru",
+      "country": "India",
+      "admin_name": "Organization Admin",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"
+    },
+    {
+      "organization_code": "SRM-DEMO-001",
+      "organization_name": "Demo University",
+      "organization_type_id": 3,
+      "official_email": "admin@demouniversity.example",
+      "phone": "+91-9000000002",
+      "address": "University Campus",
+      "city": "Chennai",
+      "country": "India",
+      "admin_name": "University Administrator",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"
+    },
+    {
+      "organization_code": "CITY-HOSP-001",
+      "organization_name": "CityCare Hospital",
+      "organization_type_id": 4,
+      "official_email": "admin@citycare.example",
+      "phone": "+91-9000000003",
+      "address": "Health Avenue",
+      "city": "Chennai",
+      "country": "India",
+      "admin_name": "Hospital Administrator",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"
+    },
+    {
+      "organization_code": "GREEN-NGO-001",
+      "organization_name": "Green Future Foundation",
+      "organization_type_id": 6,
+      "official_email": "admin@greenfuture.example",
+      "phone": "+91-9000000004",
+      "address": "Community Centre Road",
+      "city": "Lucknow",
+      "country": "India",
+      "admin_name": "NGO Administrator",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"
+    },
+    {
+      "organization_id": 5,
+      "organization_code": "NORTH-SCHOOL-001",
+      "organization_name": "Northfield Public School",
+      "organization_type_id": 2,
+      "official_email": "admin@northfield.example",
+      "phone": "+91-9000000005",
+      "address": "12 Learning Lane",
+      "city": "Pune",
+      "country": "India",
+      "admin_name": "School Administrator"
+    },
+    {
+      "organization_id": 6,
+      "organization_code": "CIVIC-GOV-001",
+      "organization_name": "Civic Services Department",
+      "organization_type_id": 5,
+      "official_email": "admin@civicservices.example",
+      "phone": "+91-9000000006",
+      "address": "Public Service Centre",
+      "city": "Jaipur",
+      "country": "India",
+      "admin_name": "Department Administrator"
+    },
+    {
+      "organization_id": 7,
+      "organization_code": "COMMUNITY-OTHER-001",
+      "organization_name": "Community Innovation Centre",
+      "organization_type_id": 7,
+      "official_email": "admin@communitycentre.example",
+      "phone": "+91-9000000007",
+      "address": "Innovation Square",
+      "city": "Kochi",
+      "country": "India",
+      "admin_name": "Centre Administrator"
+    }
+  ],
+  "departments": [
+    {
+      "organization_id": 1,
+      "department_name": "Engineering",
+      "department_code": "ENG",
+      "description": "Software and engineering projects"
+    },
+    {
+      "organization_id": 1,
+      "department_name": "Marketing",
+      "department_code": "MKT",
+      "description": "Marketing and client activities"
+    },
+    {
+      "organization_id": 1,
+      "department_name": "Finance",
+      "department_code": "FIN",
+      "description": "Finance and budgeting"
+    },
+    {
+      "organization_id": 1,
+      "department_name": "Research & Development",
+      "department_code": "RND",
+      "description": "Research and strategic development"
+    },
+    {
+      "organization_id": 1,
+      "department_name": "Human Resources",
+      "department_code": "HR",
+      "description": "Employee and organizational management"
+    },
+    {
+      "organization_id": 2,
+      "department_name": "Computer Science",
+      "department_code": "CSE",
+      "description": "Computer Science department"
+    },
+    {
+      "organization_id": 2,
+      "department_name": "Electronics",
+      "department_code": "ECE",
+      "description": "Electronics department"
+    },
+    {
+      "organization_id": 2,
+      "department_name": "Mechanical Engineering",
+      "department_code": "ME",
+      "description": "Mechanical engineering department"
+    },
+    {
+      "organization_id": 2,
+      "department_name": "Administration",
+      "department_code": "ADMIN",
+      "description": "University administration"
+    },
+    {
+      "organization_id": 3,
+      "department_name": "Radiology",
+      "department_code": "RAD",
+      "description": "Radiology services"
+    },
+    {
+      "organization_id": 3,
+      "department_name": "Cardiology",
+      "department_code": "CARD",
+      "description": "Cardiology services"
+    },
+    {
+      "organization_id": 3,
+      "department_name": "Emergency",
+      "department_code": "ER",
+      "description": "Emergency services"
+    },
+    {
+      "organization_id": 3,
+      "department_name": "Administration",
+      "department_code": "ADMIN",
+      "description": "Hospital administration"
+    },
+    {
+      "organization_id": 4,
+      "department_name": "Field Operations",
+      "department_code": "FIELD",
+      "description": "Community field operations"
+    },
+    {
+      "organization_id": 4,
+      "department_name": "Research",
+      "department_code": "RES",
+      "description": "Environmental research"
+    },
+    {
+      "organization_id": 4,
+      "department_name": "Administration",
+      "department_code": "ADMIN",
+      "description": "NGO administration"
+    },
+    {
+      "organization_id": 5,
+      "department_name": "Campus Operations",
+      "department_code": "OPS",
+      "description": "Classrooms, campus facilities, and school equipment"
+    },
+    {
+      "organization_id": 6,
+      "department_name": "Public Services",
+      "department_code": "PUB",
+      "description": "Community service delivery and field operations"
+    },
+    {
+      "organization_id": 7,
+      "department_name": "Centre Operations",
+      "department_code": "OPS",
+      "description": "Shared facilities, equipment, and community programs"
+    }
+  ],
+  "users": [
+    {
+      "organization_id": 1,
+      "department_id": 1,
+      "member_code": "EMP1001",
+      "full_name": "Rahul Sharma",
+      "email": "rahul@abctech.example",
+      "phone": "+91-9111111111",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+      "designation": "Software Engineer",
+      "role": "Employee",
+      "access_level": "Member"
+    },
+    {
+      "organization_id": 1,
+      "department_id": 2,
+      "member_code": "EMP1002",
+      "full_name": "Priya Mehta",
+      "email": "priya@abctech.example",
+      "phone": "+91-9222222222",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+      "designation": "Marketing Manager",
+      "role": "Manager",
+      "access_level": "Manager"
+    },
+    {
+      "organization_id": 1,
+      "department_id": 4,
+      "member_code": "EMP1003",
+      "full_name": "Arjun Rao",
+      "email": "arjun@abctech.example",
+      "phone": "+91-9333333333",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldL17lhWy",
+      "designation": "R&D Manager",
+      "role": "Manager",
+      "access_level": "Manager"
+    },
+    {
+      "organization_id": 1,
+      "department_id": 3,
+      "member_code": "EMP1004",
+      "full_name": "Neha Verma",
+      "email": "neha@abctech.example",
+      "phone": "+91-9444444444",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+      "designation": "Finance Analyst",
+      "role": "Employee",
+      "access_level": "Member"
+    },
+    {
+      "organization_id": 2,
+      "department_id": 6,
+      "member_code": "FAC2001",
+      "full_name": "Dr. Ananya Singh",
+      "email": "ananya@demouniversity.example",
+      "phone": "+91-9555555555",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+      "designation": "Assistant Professor",
+      "role": "Faculty",
+      "access_level": "Manager"
+    },
+    {
+      "organization_id": 2,
+      "department_id": 7,
+      "member_code": "FAC2002",
+      "full_name": "Dr. Karan Kumar",
+      "email": "karan@demouniversity.example",
+      "phone": "+91-9666666666",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+      "designation": "Associate Professor",
+      "role": "Faculty",
+      "access_level": "Manager"
+    },
+    {
+      "organization_id": 2,
+      "department_id": 6,
+      "member_code": "STU2001",
+      "full_name": "Aman Gupta",
+      "email": "aman@demouniversity.example",
+      "phone": "+91-9777777777",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+      "designation": "Student",
+      "role": "Student",
+      "access_level": "Member"
+    },
+    {
+      "organization_id": 3,
+      "department_id": 10,
+      "member_code": "DOC3001",
+      "full_name": "Dr. Meera Iyer",
+      "email": "meera@citycare.example",
+      "phone": "+91-9888888888",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+      "designation": "Cardiologist",
+      "role": "Doctor",
+      "access_level": "Manager"
+    },
+    {
+      "organization_id": 3,
+      "department_id": 12,
+      "member_code": "DOC3002",
+      "full_name": "Dr. Vikram Shah",
+      "email": "vikram@citycare.example",
+      "phone": "+91-9999999991",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+      "designation": "Emergency Physician",
+      "role": "Doctor",
+      "access_level": "Manager"
+    },
+    {
+      "organization_id": 4,
+      "department_id": 14,
+      "member_code": "EMP4001",
+      "full_name": "Riya Joshi",
+      "email": "riya@greenfuture.example",
+      "phone": "+91-9999999992",
+      "password_hash": "$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+      "designation": "Field Coordinator",
+      "role": "Coordinator",
+      "access_level": "Manager"
+    },
+    {
+      "organization_id": 5,
+      "department_id": 17,
+      "member_code": "SCL5001",
+      "full_name": "Maya Nair",
+      "email": "maya@northfield.example",
+      "phone": "+91-9000010005",
+      "designation": "Campus Resource Manager",
+      "role": "Manager",
+      "access_level": "Resource Manager"
+    },
+    {
+      "organization_id": 5,
+      "department_id": 17,
+      "member_code": "SCL5002",
+      "full_name": "Ishaan Das",
+      "email": "ishaan@northfield.example",
+      "phone": "+91-9000020005",
+      "designation": "Science Teacher",
+      "role": "Employee",
+      "access_level": "Member"
+    },
+    {
+      "organization_id": 6,
+      "department_id": 18,
+      "member_code": "GOV6001",
+      "full_name": "Aditi Rao",
+      "email": "aditi@civicservices.example",
+      "phone": "+91-9000010006",
+      "designation": "Public Resource Manager",
+      "role": "Manager",
+      "access_level": "Resource Manager"
+    },
+    {
+      "organization_id": 6,
+      "department_id": 18,
+      "member_code": "GOV6002",
+      "full_name": "Kabir Sen",
+      "email": "kabir@civicservices.example",
+      "phone": "+91-9000020006",
+      "designation": "Field Officer",
+      "role": "Employee",
+      "access_level": "Member"
+    },
+    {
+      "organization_id": 7,
+      "department_id": 19,
+      "member_code": "OTH7001",
+      "full_name": "Noor Thomas",
+      "email": "noor@communitycentre.example",
+      "phone": "+91-9000010007",
+      "designation": "Operations Resource Manager",
+      "role": "Manager",
+      "access_level": "Resource Manager"
+    },
+    {
+      "organization_id": 7,
+      "department_id": 19,
+      "member_code": "OTH7002",
+      "full_name": "Dev Patel",
+      "email": "dev@communitycentre.example",
+      "phone": "+91-9000020007",
+      "designation": "Program Coordinator",
+      "role": "Employee",
+      "access_level": "Member"
+    }
+  ],
+  "resource_types": [
+    {
+      "type_name": "Meeting Room",
+      "description": "Room used for meetings and collaboration"
+    },
+    {
+      "type_name": "Laboratory",
+      "description": "Laboratory or technical facility"
+    },
+    {
+      "type_name": "Vehicle",
+      "description": "Organization vehicle"
+    },
+    {
+      "type_name": "Equipment",
+      "description": "General organizational equipment"
+    },
+    {
+      "type_name": "Projector",
+      "description": "Presentation projector"
+    },
+    {
+      "type_name": "Sports Facility",
+      "description": "Sports or recreation facility"
+    },
+    {
+      "type_name": "Library",
+      "description": "Library or study facility"
+    },
+    {
+      "type_name": "Workspace",
+      "description": "Office or shared workspace"
+    },
+    {
+      "type_name": "Medical Equipment",
+      "description": "Medical equipment"
+    },
+    {
+      "type_name": "Operation Theatre",
+      "description": "Hospital operation theatre"
+    },
+    {
+      "type_name": "Classroom",
+      "description": "Classroom or teaching space"
+    },
+    {
+      "type_name": "Other",
+      "description": "Other organizational resource"
+    }
+  ],
+  "resources": [
+    {
+      "organization_id": 1,
+      "department_id": 2,
+      "resource_type_id": 1,
+      "resource_code": "MR-001",
+      "resource_name": "Conference Room A",
+      "description": "Main conference room for client and management meetings",
+      "location": "Floor 3",
+      "capacity": 15,
+      "quantity": 1,
+      "maximum_allotted_minutes": 120,
+      "status": "Available",
+      "image_name": "meeting_room.png",
+      "responsible_user_id": 2
+    },
+    {
+      "organization_id": 1,
+      "department_id": 1,
+      "resource_type_id": 1,
+      "resource_code": "MR-002",
+      "resource_name": "Engineering Meeting Room",
+      "description": "Meeting room for engineering teams",
+      "location": "Floor 2",
+      "capacity": 10,
+      "quantity": 1,
+      "maximum_allotted_minutes": 120,
+      "status": "Available",
+      "image_name": "meeting_room.png",
+      "responsible_user_id": 1
+    },
+    {
+      "organization_id": 1,
+      "department_id": 4,
+      "resource_type_id": 4,
+      "resource_code": "EQ-001",
+      "resource_name": "AI GPU Workstation",
+      "description": "High-performance workstation for R&D experiments",
+      "location": "R&D Lab",
+      "capacity": 1,
+      "quantity": 4,
+      "maximum_allotted_minutes": 240,
+      "status": "Partially Available",
+      "image_name": "equipment.png",
+      "responsible_user_id": 3
+    },
+    {
+      "organization_id": 1,
+      "department_id": 2,
+      "resource_type_id": 5,
+      "resource_code": "PJ-001",
+      "resource_name": "Projector A",
+      "description": "Portable presentation projector",
+      "location": "IT Store",
+      "capacity": 1,
+      "quantity": 2,
+      "maximum_allotted_minutes": 480,
+      "status": "Available",
+      "image_name": "projector.png",
+      "responsible_user_id": 2
+    },
+    {
+      "organization_id": 1,
+      "department_id": 1,
+      "resource_type_id": 8,
+      "resource_code": "WS-001",
+      "resource_name": "Collaboration Workspace",
+      "description": "Shared workspace for project teams",
+      "location": "Floor 4",
+      "capacity": 12,
+      "quantity": 1,
+      "maximum_allotted_minutes": 240,
+      "status": "Available",
+      "image_name": "workspace.png",
+      "responsible_user_id": 1
+    },
+    {
+      "organization_id": 1,
+      "department_id": 2,
+      "resource_type_id": 3,
+      "resource_code": "VH-001",
+      "resource_name": "Company Vehicle A",
+      "description": "Vehicle for client visits",
+      "location": "Parking Block A",
+      "capacity": 5,
+      "quantity": 1,
+      "maximum_allotted_minutes": 480,
+      "status": "Available",
+      "image_name": "vehicle.png",
+      "responsible_user_id": 2
+    },
+    {
+      "organization_id": 2,
+      "department_id": 6,
+      "resource_type_id": 2,
+      "resource_code": "LAB-001",
+      "resource_name": "Computer Laboratory 1",
+      "description": "Computer lab for teaching and examinations",
+      "location": "Tech Block",
+      "capacity": 60,
+      "quantity": 1,
+      "maximum_allotted_minutes": 180,
+      "status": "Available",
+      "image_name": "laboratory.png",
+      "responsible_user_id": 5
+    },
+    {
+      "organization_id": 2,
+      "department_id": 7,
+      "resource_type_id": 2,
+      "resource_code": "LAB-002",
+      "resource_name": "Electronics Laboratory",
+      "description": "Electronics and embedded systems laboratory",
+      "location": "ECE Block",
+      "capacity": 40,
+      "quantity": 1,
+      "maximum_allotted_minutes": 180,
+      "status": "Available",
+      "image_name": "laboratory.png",
+      "responsible_user_id": 6
+    },
+    {
+      "organization_id": 2,
+      "department_id": 9,
+      "resource_type_id": 7,
+      "resource_code": "LIB-001",
+      "resource_name": "Central Library Hall",
+      "description": "Main university library study space",
+      "location": "Central Library",
+      "capacity": 120,
+      "quantity": 1,
+      "maximum_allotted_minutes": 240,
+      "status": "Available",
+      "image_name": "library.png",
+      "responsible_user_id": 5
+    },
+    {
+      "organization_id": 2,
+      "department_id": 9,
+      "resource_type_id": 11,
+      "resource_code": "CLS-001",
+      "resource_name": "Smart Classroom 101",
+      "description": "Technology-enabled classroom",
+      "location": "Academic Block",
+      "capacity": 80,
+      "quantity": 1,
+      "maximum_allotted_minutes": 180,
+      "status": "Available",
+      "image_name": "workspace.png",
+      "responsible_user_id": 5
+    },
+    {
+      "organization_id": 3,
+      "department_id": 10,
+      "resource_type_id": 9,
+      "resource_code": "MED-001",
+      "resource_name": "MRI Machine 01",
+      "description": "MRI diagnostic equipment",
+      "location": "Radiology",
+      "capacity": 1,
+      "quantity": 1,
+      "maximum_allotted_minutes": 180,
+      "status": "Available",
+      "image_name": "equipment.png",
+      "responsible_user_id": 8
+    },
+    {
+      "organization_id": 3,
+      "department_id": 10,
+      "resource_type_id": 10,
+      "resource_code": "OT-001",
+      "resource_name": "Operation Theatre 1",
+      "description": "Operation theatre for scheduled procedures",
+      "location": "Surgical Block",
+      "capacity": 1,
+      "quantity": 1,
+      "maximum_allotted_minutes": 240,
+      "status": "Available",
+      "image_name": "laboratory.png",
+      "responsible_user_id": 8
+    },
+    {
+      "organization_id": 3,
+      "department_id": 12,
+      "resource_type_id": 9,
+      "resource_code": "MED-002",
+      "resource_name": "Emergency Ventilator 02",
+      "description": "Emergency respiratory support equipment",
+      "location": "Emergency Ward",
+      "capacity": 1,
+      "quantity": 2,
+      "maximum_allotted_minutes": 480,
+      "status": "Available",
+      "image_name": "equipment.png",
+      "responsible_user_id": 9
+    },
+    {
+      "organization_id": 4,
+      "department_id": 14,
+      "resource_type_id": 3,
+      "resource_code": "NGO-VH-001",
+      "resource_name": "Field Vehicle",
+      "description": "Vehicle for community field operations",
+      "location": "NGO Office",
+      "capacity": 7,
+      "quantity": 1,
+      "maximum_allotted_minutes": 480,
+      "status": "Available",
+      "image_name": "vehicle.png",
+      "responsible_user_id": 10
+    },
+    {
+      "organization_id": 5,
+      "department_id": 17,
+      "resource_type_id": 11,
+      "resource_code": "SCL-CLS-001",
+      "resource_name": "Science Learning Classroom",
+      "description": "Flexible classroom for science lessons and supervised group learning",
+      "location": "North Wing, Room 12",
+      "capacity": 32,
+      "quantity": 1,
+      "maximum_allotted_minutes": 180,
+      "status": "Available",
+      "image_name": "school.png",
+      "responsible_user_id": 11
+    },
+    {
+      "organization_id": 6,
+      "department_id": 18,
+      "resource_type_id": 3,
+      "resource_code": "GOV-VH-001",
+      "resource_name": "Community Service Vehicle",
+      "description": "Shared vehicle for scheduled public-service and field visits",
+      "location": "Civic Services Centre",
+      "capacity": 5,
+      "quantity": 2,
+      "maximum_allotted_minutes": 480,
+      "status": "Available",
+      "image_name": "vehicle.png",
+      "responsible_user_id": 13
+    },
+    {
+      "organization_id": 7,
+      "department_id": 19,
+      "resource_type_id": 4,
+      "resource_code": "OTH-EQ-001",
+      "resource_name": "Portable Community Equipment Kit",
+      "description": "Shared presentation and workshop equipment for community programs",
+      "location": "Main Activity Hall",
+      "capacity": 1,
+      "quantity": 3,
+      "maximum_allotted_minutes": 360,
+      "status": "Available",
+      "image_name": "equipment.png",
+      "responsible_user_id": 15
+    }
+  ],
+  "resource_availability": [
+    {
+      "resource_id": 1,
+      "day_of_week": "Monday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 1,
+      "day_of_week": "Tuesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 1,
+      "day_of_week": "Wednesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 1,
+      "day_of_week": "Thursday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 1,
+      "day_of_week": "Friday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 2,
+      "day_of_week": "Monday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 2,
+      "day_of_week": "Tuesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 2,
+      "day_of_week": "Wednesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 2,
+      "day_of_week": "Thursday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 2,
+      "day_of_week": "Friday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 3,
+      "day_of_week": "Monday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 3,
+      "day_of_week": "Tuesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 3,
+      "day_of_week": "Wednesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 3,
+      "day_of_week": "Thursday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 3,
+      "day_of_week": "Friday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 4,
+      "day_of_week": "Monday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 4,
+      "day_of_week": "Tuesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 4,
+      "day_of_week": "Wednesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 4,
+      "day_of_week": "Thursday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 4,
+      "day_of_week": "Friday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 5,
+      "day_of_week": "Monday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 5,
+      "day_of_week": "Tuesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 5,
+      "day_of_week": "Wednesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 5,
+      "day_of_week": "Thursday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 5,
+      "day_of_week": "Friday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 6,
+      "day_of_week": "Monday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 6,
+      "day_of_week": "Tuesday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 6,
+      "day_of_week": "Wednesday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 6,
+      "day_of_week": "Thursday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 6,
+      "day_of_week": "Friday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 7,
+      "day_of_week": "Monday",
+      "start_time": "08:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 7,
+      "day_of_week": "Tuesday",
+      "start_time": "08:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 7,
+      "day_of_week": "Wednesday",
+      "start_time": "08:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 7,
+      "day_of_week": "Thursday",
+      "start_time": "08:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 7,
+      "day_of_week": "Friday",
+      "start_time": "08:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 7,
+      "day_of_week": "Saturday",
+      "start_time": "08:00:00",
+      "end_time": "14:00:00"
+    },
+    {
+      "resource_id": 8,
+      "day_of_week": "Monday",
+      "start_time": "08:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 8,
+      "day_of_week": "Tuesday",
+      "start_time": "08:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 8,
+      "day_of_week": "Wednesday",
+      "start_time": "08:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 8,
+      "day_of_week": "Thursday",
+      "start_time": "08:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 8,
+      "day_of_week": "Friday",
+      "start_time": "08:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 8,
+      "day_of_week": "Saturday",
+      "start_time": "08:00:00",
+      "end_time": "14:00:00"
+    },
+    {
+      "resource_id": 9,
+      "day_of_week": "Monday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 9,
+      "day_of_week": "Tuesday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 9,
+      "day_of_week": "Wednesday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 9,
+      "day_of_week": "Thursday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 9,
+      "day_of_week": "Friday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 9,
+      "day_of_week": "Saturday",
+      "start_time": "09:00:00",
+      "end_time": "17:00:00"
+    },
+    {
+      "resource_id": 11,
+      "day_of_week": "Monday",
+      "start_time": "00:00:00",
+      "end_time": "23:59:00"
+    },
+    {
+      "resource_id": 11,
+      "day_of_week": "Tuesday",
+      "start_time": "00:00:00",
+      "end_time": "23:59:00"
+    },
+    {
+      "resource_id": 11,
+      "day_of_week": "Wednesday",
+      "start_time": "00:00:00",
+      "end_time": "23:59:00"
+    },
+    {
+      "resource_id": 11,
+      "day_of_week": "Thursday",
+      "start_time": "00:00:00",
+      "end_time": "23:59:00"
+    },
+    {
+      "resource_id": 11,
+      "day_of_week": "Friday",
+      "start_time": "00:00:00",
+      "end_time": "23:59:00"
+    },
+    {
+      "resource_id": 11,
+      "day_of_week": "Saturday",
+      "start_time": "00:00:00",
+      "end_time": "23:59:00"
+    },
+    {
+      "resource_id": 11,
+      "day_of_week": "Sunday",
+      "start_time": "00:00:00",
+      "end_time": "23:59:00"
+    },
+    {
+      "resource_id": 12,
+      "day_of_week": "Monday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 12,
+      "day_of_week": "Tuesday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 12,
+      "day_of_week": "Wednesday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 12,
+      "day_of_week": "Thursday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 12,
+      "day_of_week": "Friday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 12,
+      "day_of_week": "Saturday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 12,
+      "day_of_week": "Sunday",
+      "start_time": "08:00:00",
+      "end_time": "20:00:00"
+    },
+    {
+      "resource_id": 15,
+      "day_of_week": "Monday",
+      "start_time": "08:00:00",
+      "end_time": "16:00:00"
+    },
+    {
+      "resource_id": 15,
+      "day_of_week": "Tuesday",
+      "start_time": "08:00:00",
+      "end_time": "16:00:00"
+    },
+    {
+      "resource_id": 15,
+      "day_of_week": "Wednesday",
+      "start_time": "08:00:00",
+      "end_time": "16:00:00"
+    },
+    {
+      "resource_id": 15,
+      "day_of_week": "Thursday",
+      "start_time": "08:00:00",
+      "end_time": "16:00:00"
+    },
+    {
+      "resource_id": 15,
+      "day_of_week": "Friday",
+      "start_time": "08:00:00",
+      "end_time": "16:00:00"
+    },
+    {
+      "resource_id": 16,
+      "day_of_week": "Monday",
+      "start_time": "09:00:00",
+      "end_time": "17:00:00"
+    },
+    {
+      "resource_id": 16,
+      "day_of_week": "Tuesday",
+      "start_time": "09:00:00",
+      "end_time": "17:00:00"
+    },
+    {
+      "resource_id": 16,
+      "day_of_week": "Wednesday",
+      "start_time": "09:00:00",
+      "end_time": "17:00:00"
+    },
+    {
+      "resource_id": 16,
+      "day_of_week": "Thursday",
+      "start_time": "09:00:00",
+      "end_time": "17:00:00"
+    },
+    {
+      "resource_id": 16,
+      "day_of_week": "Friday",
+      "start_time": "09:00:00",
+      "end_time": "17:00:00"
+    },
+    {
+      "resource_id": 17,
+      "day_of_week": "Monday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 17,
+      "day_of_week": "Tuesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 17,
+      "day_of_week": "Wednesday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 17,
+      "day_of_week": "Thursday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    },
+    {
+      "resource_id": 17,
+      "day_of_week": "Friday",
+      "start_time": "09:00:00",
+      "end_time": "18:00:00"
+    }
+  ],
+  "organization_priorities": [
+    {
+      "organization_id": 1,
+      "priority_name": "Strategic AI Project",
+      "description": "AI platform development for a strategic business initiative",
+      "priority_level": "Critical",
+      "weight": 100,
+      "active_from": "2026-01-01",
+      "created_by": 3
+    },
+    {
+      "organization_id": 1,
+      "priority_name": "Important Client Requirements",
+      "description": "Resources required for high-value client deliverables",
+      "priority_level": "High",
+      "weight": 90,
+      "active_from": "2026-01-01",
+      "created_by": 2
+    },
+    {
+      "organization_id": 1,
+      "priority_name": "Research & Development",
+      "description": "Long-term research and innovation activities",
+      "priority_level": "High",
+      "weight": 80,
+      "active_from": "2026-01-01",
+      "created_by": 3
+    },
+    {
+      "organization_id": 1,
+      "priority_name": "Employee Training",
+      "description": "Internal learning and development activities",
+      "priority_level": "Medium",
+      "weight": 55,
+      "active_from": "2026-01-01",
+      "created_by": 2
+    },
+    {
+      "organization_id": 1,
+      "priority_name": "Routine Internal Meetings",
+      "description": "Regular non-critical meetings",
+      "priority_level": "Low",
+      "weight": 25,
+      "active_from": "2026-01-01",
+      "created_by": 2
+    },
+    {
+      "organization_id": 2,
+      "priority_name": "Examinations",
+      "description": "Resource allocation required for examinations",
+      "priority_level": "Critical",
+      "weight": 100,
+      "active_from": "2026-01-01",
+      "created_by": 5
+    },
+    {
+      "organization_id": 2,
+      "priority_name": "Academic Classes",
+      "description": "Regular teaching and academic activities",
+      "priority_level": "High",
+      "weight": 85,
+      "active_from": "2026-01-01",
+      "created_by": 5
+    },
+    {
+      "organization_id": 2,
+      "priority_name": "Research",
+      "description": "University research and innovation activities",
+      "priority_level": "High",
+      "weight": 80,
+      "active_from": "2026-01-01",
+      "created_by": 5
+    },
+    {
+      "organization_id": 2,
+      "priority_name": "Student Events",
+      "description": "Student activities and events",
+      "priority_level": "Medium",
+      "weight": 50,
+      "active_from": "2026-01-01",
+      "created_by": 5
+    },
+    {
+      "organization_id": 3,
+      "priority_name": "Emergency Care",
+      "description": "Critical resources for emergency treatment",
+      "priority_level": "Critical",
+      "weight": 100,
+      "active_from": "2026-01-01",
+      "created_by": 9
+    },
+    {
+      "organization_id": 3,
+      "priority_name": "Scheduled Surgery",
+      "description": "Resources required for scheduled surgeries",
+      "priority_level": "High",
+      "weight": 90,
+      "active_from": "2026-01-01",
+      "created_by": 8
+    },
+    {
+      "organization_id": 3,
+      "priority_name": "Routine Diagnosis",
+      "description": "Resources required for routine diagnostic procedures",
+      "priority_level": "Medium",
+      "weight": 60,
+      "active_from": "2026-01-01",
+      "created_by": 8
+    },
+    {
+      "organization_id": 4,
+      "priority_name": "Relief Operations",
+      "description": "Resources for urgent community relief operations",
+      "priority_level": "Critical",
+      "weight": 100,
+      "active_from": "2026-01-01",
+      "created_by": 10
+    },
+    {
+      "organization_id": 4,
+      "priority_name": "Community Awareness",
+      "description": "Regular awareness and outreach programs",
+      "priority_level": "High",
+      "weight": 80,
+      "active_from": "2026-01-01",
+      "created_by": 10
+    },
+    {
+      "organization_id": 5,
+      "priority_name": "Student Learning",
+      "description": "Classroom and equipment access for scheduled teaching and student learning",
+      "priority_level": "High",
+      "weight": 85,
+      "active_from": "2026-01-01",
+      "created_by": 11
+    },
+    {
+      "organization_id": 6,
+      "priority_name": "Essential Public Services",
+      "description": "Resources required to deliver scheduled public services to residents",
+      "priority_level": "Critical",
+      "weight": 95,
+      "active_from": "2026-01-01",
+      "created_by": 13
+    },
+    {
+      "organization_id": 7,
+      "priority_name": "Community Programs",
+      "description": "Shared equipment needed for workshops and community activities",
+      "priority_level": "High",
+      "weight": 80,
+      "active_from": "2026-01-01",
+      "created_by": 15
+    }
+  ],
+  "strategic_trends": [
+    {
+      "organization_id": 1,
+      "sector_or_area": "Artificial Intelligence",
+      "period_label": "2026 Q3",
+      "trend_direction": "Strong Growth",
+      "trend_value": 27,
+      "interest_level": "Critical",
+      "investment_priority": 100,
+      "important_client": "Global Enterprise Client",
+      "future_priority": "Increase R&D resources and specialist availability",
+      "notes": "Strong internal strategic interest",
+      "created_by": 3
+    },
+    {
+      "organization_id": 1,
+      "sector_or_area": "Cloud Services",
+      "period_label": "2026 Q3",
+      "trend_direction": "Growth",
+      "trend_value": 16,
+      "interest_level": "High",
+      "investment_priority": 80,
+      "important_client": "Enterprise Cloud Client",
+      "future_priority": "Expand engineering capacity",
+      "notes": "Positive demand trend",
+      "created_by": 3
+    },
+    {
+      "organization_id": 1,
+      "sector_or_area": "Legacy Hardware",
+      "period_label": "2026 Q3",
+      "trend_direction": "Declining",
+      "trend_value": -7,
+      "interest_level": "Low",
+      "investment_priority": 20,
+      "important_client": null,
+      "future_priority": "Reduce new resource allocation unless operationally required",
+      "notes": "Declining demand",
+      "created_by": 3
+    },
+    {
+      "organization_id": 1,
+      "sector_or_area": "Cybersecurity",
+      "period_label": "2026 Q3",
+      "trend_direction": "Growth",
+      "trend_value": 19,
+      "interest_level": "High",
+      "investment_priority": 85,
+      "important_client": "Financial Services Client",
+      "future_priority": "Prioritize security specialists",
+      "notes": "Growing organizational demand",
+      "created_by": 3
+    },
+    {
+      "organization_id": 2,
+      "sector_or_area": "AI Research",
+      "period_label": "2026 Q3",
+      "trend_direction": "Strong Growth",
+      "trend_value": 25,
+      "interest_level": "High",
+      "investment_priority": 90,
+      "important_client": null,
+      "future_priority": "Increase laboratory access for research",
+      "notes": "Strategic academic area",
+      "created_by": 5
+    },
+    {
+      "organization_id": 2,
+      "sector_or_area": "Examinations",
+      "period_label": "2026 Q3",
+      "trend_direction": "Stable",
+      "trend_value": 2,
+      "interest_level": "Critical",
+      "investment_priority": 100,
+      "important_client": null,
+      "future_priority": "Prioritize classrooms and laboratories during exam periods",
+      "notes": "Mandatory academic requirement",
+      "created_by": 5
+    },
+    {
+      "organization_id": 3,
+      "sector_or_area": "Emergency Care",
+      "period_label": "2026 Q3",
+      "trend_direction": "Growth",
+      "trend_value": 12,
+      "interest_level": "Critical",
+      "investment_priority": 100,
+      "important_client": null,
+      "future_priority": "Maintain emergency equipment availability",
+      "notes": "High operational priority",
+      "created_by": 9
+    },
+    {
+      "organization_id": 4,
+      "sector_or_area": "Community Relief",
+      "period_label": "2026 Q3",
+      "trend_direction": "Growth",
+      "trend_value": 15,
+      "interest_level": "Critical",
+      "investment_priority": 95,
+      "important_client": null,
+      "future_priority": "Prioritize field vehicles and staff",
+      "notes": "Increased community activity",
+      "created_by": 10
+    },
+    {
+      "organization_id": 5,
+      "sector_or_area": "Digital Learning",
+      "period_label": "2026 Q4",
+      "trend_direction": "Growth",
+      "trend_value": 18,
+      "interest_level": "High",
+      "investment_priority": 82,
+      "important_client": null,
+      "future_priority": "Expand classroom technology access",
+      "notes": "Growing demand for blended learning sessions",
+      "created_by": 11
+    },
+    {
+      "organization_id": 6,
+      "sector_or_area": "Community Service Demand",
+      "period_label": "2026 Q4",
+      "trend_direction": "Growth",
+      "trend_value": 14,
+      "interest_level": "Critical",
+      "investment_priority": 90,
+      "important_client": null,
+      "future_priority": "Coordinate shared transport around field schedules",
+      "notes": "More scheduled outreach visits are expected",
+      "created_by": 13
+    },
+    {
+      "organization_id": 7,
+      "sector_or_area": "Community Workshops",
+      "period_label": "2026 Q4",
+      "trend_direction": "Stable",
+      "trend_value": 6,
+      "interest_level": "Medium",
+      "investment_priority": 65,
+      "important_client": null,
+      "future_priority": "Maintain a shared inventory of workshop equipment",
+      "notes": "Regular community programming continues",
+      "created_by": 15
+    }
+  ],
+  "resource_requests": [
+    {
+      "organization_id": 1,
+      "requester_id": 1,
+      "department_id": 1,
+      "resource_id": 1,
+      "purpose": "Client presentation for strategic AI platform",
+      "project_name": "Project Alpha",
+      "requested_date": "2026-10-15",
+      "start_time": "14:00:00",
+      "end_time": "16:00:00",
+      "duration_minutes": 120,
+      "planning_cycle_week": "2026-W41",
+      "requested_priority": "High",
+      "system_priority_score": 91,
+      "deadline_date": "2026-10-15",
+      "is_late_request": false,
+      "status": "Recommended",
+      "user_notes": "Important client presentation"
+    },
+    {
+      "organization_id": 1,
+      "requester_id": 4,
+      "department_id": 3,
+      "resource_id": 1,
+      "purpose": "Finance review meeting",
+      "project_name": "Quarterly Finance Review",
+      "requested_date": "2026-10-15",
+      "start_time": "14:00:00",
+      "end_time": "15:00:00",
+      "duration_minutes": 60,
+      "planning_cycle_week": "2026-W41",
+      "requested_priority": "Medium",
+      "system_priority_score": 52,
+      "deadline_date": "2026-10-15",
+      "is_late_request": false,
+      "status": "Conflict",
+      "user_notes": "Routine internal review"
+    },
+    {
+      "organization_id": 1,
+      "requester_id": 3,
+      "department_id": 4,
+      "resource_id": 3,
+      "purpose": "AI model training experiment",
+      "project_name": "AI Research Project",
+      "requested_date": "2026-10-16",
+      "start_time": "10:00:00",
+      "end_time": "14:00:00",
+      "duration_minutes": 240,
+      "planning_cycle_week": "2026-W41",
+      "requested_priority": "Critical",
+      "system_priority_score": 94,
+      "deadline_date": "2026-10-16",
+      "is_late_request": false,
+      "status": "Approved",
+      "user_notes": "Strategic R&D activity"
+    },
+    {
+      "organization_id": 1,
+      "requester_id": 2,
+      "department_id": 2,
+      "resource_id": 4,
+      "purpose": "Presentation for important client",
+      "project_name": "Client Beta",
+      "requested_date": "2026-10-17",
+      "start_time": "11:00:00",
+      "end_time": "12:00:00",
+      "duration_minutes": 60,
+      "planning_cycle_week": "2026-W41",
+      "requested_priority": "High",
+      "system_priority_score": 83,
+      "deadline_date": "2026-10-17",
+      "is_late_request": false,
+      "status": "Pending",
+      "user_notes": "Client-facing presentation"
+    },
+    {
+      "organization_id": 2,
+      "requester_id": 5,
+      "department_id": 6,
+      "resource_id": 7,
+      "purpose": "Mid-semester practical examination",
+      "project_name": "DAA Practical Examination",
+      "requested_date": "2026-10-20",
+      "start_time": "10:00:00",
+      "end_time": "13:00:00",
+      "duration_minutes": 180,
+      "planning_cycle_week": "2026-W42",
+      "requested_priority": "Critical",
+      "system_priority_score": 97,
+      "deadline_date": "2026-10-20",
+      "is_late_request": false,
+      "status": "Approved",
+      "user_notes": "Academic examination"
+    },
+    {
+      "organization_id": 2,
+      "requester_id": 7,
+      "department_id": 6,
+      "resource_id": 7,
+      "purpose": "Student project demonstration",
+      "project_name": "Final Project Demo",
+      "requested_date": "2026-10-20",
+      "start_time": "12:00:00",
+      "end_time": "14:00:00",
+      "duration_minutes": 120,
+      "planning_cycle_week": "2026-W42",
+      "requested_priority": "Medium",
+      "system_priority_score": 66,
+      "deadline_date": "2026-10-20",
+      "is_late_request": false,
+      "status": "Conflict",
+      "user_notes": "Overlaps with examination"
+    },
+    {
+      "organization_id": 3,
+      "requester_id": 8,
+      "department_id": 10,
+      "resource_id": 11,
+      "purpose": "Scheduled MRI diagnostic procedure",
+      "project_name": "Patient Diagnostic Case",
+      "requested_date": "2026-10-18",
+      "start_time": "11:00:00",
+      "end_time": "13:00:00",
+      "duration_minutes": 120,
+      "planning_cycle_week": "2026-W41",
+      "requested_priority": "High",
+      "system_priority_score": 89,
+      "deadline_date": "2026-10-18",
+      "is_late_request": false,
+      "status": "Approved",
+      "user_notes": "Scheduled diagnostic procedure"
+    },
+    {
+      "organization_id": 3,
+      "requester_id": 9,
+      "department_id": 12,
+      "resource_id": 13,
+      "purpose": "Emergency department equipment requirement",
+      "project_name": "Emergency Case",
+      "requested_date": "2026-10-18",
+      "start_time": "12:00:00",
+      "end_time": "16:00:00",
+      "duration_minutes": 240,
+      "planning_cycle_week": "2026-W41",
+      "requested_priority": "Critical",
+      "system_priority_score": 99,
+      "deadline_date": "2026-10-18",
+      "is_late_request": true,
+      "status": "Allocated",
+      "user_notes": "Emergency requirement"
+    },
+    {
+      "organization_id": 4,
+      "requester_id": 10,
+      "department_id": 14,
+      "resource_id": 14,
+      "purpose": "Community energy awareness campaign",
+      "project_name": "Community Outreach",
+      "requested_date": "2026-10-19",
+      "start_time": "08:00:00",
+      "end_time": "16:00:00",
+      "duration_minutes": 480,
+      "planning_cycle_week": "2026-W42",
+      "requested_priority": "High",
+      "system_priority_score": 85,
+      "deadline_date": "2026-10-19",
+      "is_late_request": false,
+      "status": "Pending",
+      "user_notes": "Field visit requiring vehicle"
+    },
+    {
+      "organization_id": 5,
+      "requester_id": 12,
+      "department_id": 17,
+      "resource_id": 15,
+      "purpose": "Hands-on science lesson for Grade 8",
+      "project_name": "Science Discovery Week",
+      "requested_date": "2026-10-12",
+      "start_time": "10:00:00",
+      "end_time": "12:00:00",
+      "duration_minutes": 120,
+      "planning_cycle_week": "2026-W42",
+      "requested_priority": "High",
+      "system_priority_score": 82,
+      "deadline_date": "2026-10-12",
+      "is_late_request": false,
+      "status": "Pending",
+      "user_notes": "Classroom setup for a scheduled student activity"
+    },
+    {
+      "organization_id": 6,
+      "requester_id": 14,
+      "department_id": 18,
+      "resource_id": 16,
+      "purpose": "Scheduled resident support visits",
+      "project_name": "Neighbourhood Service Round",
+      "requested_date": "2026-10-13",
+      "start_time": "09:00:00",
+      "end_time": "13:00:00",
+      "duration_minutes": 240,
+      "planning_cycle_week": "2026-W42",
+      "requested_priority": "Critical",
+      "system_priority_score": 88,
+      "deadline_date": "2026-10-13",
+      "is_late_request": false,
+      "status": "Pending",
+      "user_notes": "Vehicle requested for planned public service field work"
+    },
+    {
+      "organization_id": 7,
+      "requester_id": 16,
+      "department_id": 19,
+      "resource_id": 17,
+      "purpose": "Portable equipment for a community workshop",
+      "project_name": "Digital Skills Workshop",
+      "requested_date": "2026-10-14",
+      "start_time": "13:00:00",
+      "end_time": "15:00:00",
+      "duration_minutes": 120,
+      "planning_cycle_week": "2026-W42",
+      "requested_priority": "High",
+      "system_priority_score": 76,
+      "deadline_date": "2026-10-14",
+      "is_late_request": false,
+      "status": "Pending",
+      "user_notes": "Equipment for an open community training session"
+    }
+  ],
+  "request_priority_factors": [
+    {
+      "request_id": 1,
+      "strategic_priority_id": 1,
+      "urgency_score": 85,
+      "strategic_score": 100,
+      "deadline_score": 90,
+      "department_score": 85,
+      "availability_score": 95,
+      "total_score": 91,
+      "recommendation_reason": "High strategic importance, important client requirement and suitable resource availability."
+    },
+    {
+      "request_id": 2,
+      "strategic_priority_id": 5,
+      "urgency_score": 40,
+      "strategic_score": 25,
+      "deadline_score": 45,
+      "department_score": 55,
+      "availability_score": 95,
+      "total_score": 52,
+      "recommendation_reason": "Routine internal meeting with lower strategic priority."
+    },
+    {
+      "request_id": 3,
+      "strategic_priority_id": 1,
+      "urgency_score": 95,
+      "strategic_score": 100,
+      "deadline_score": 95,
+      "department_score": 90,
+      "availability_score": 90,
+      "total_score": 94,
+      "recommendation_reason": "Critical strategic R&D activity with high organizational priority."
+    },
+    {
+      "request_id": 4,
+      "strategic_priority_id": 2,
+      "urgency_score": 75,
+      "strategic_score": 90,
+      "deadline_score": 80,
+      "department_score": 75,
+      "availability_score": 95,
+      "total_score": 83,
+      "recommendation_reason": "Important client requirement with strong strategic relevance."
+    },
+    {
+      "request_id": 5,
+      "strategic_priority_id": 6,
+      "urgency_score": 100,
+      "strategic_score": 100,
+      "deadline_score": 100,
+      "department_score": 95,
+      "availability_score": 90,
+      "total_score": 97,
+      "recommendation_reason": "Examination is a critical institutional requirement."
+    },
+    {
+      "request_id": 6,
+      "strategic_priority_id": 7,
+      "urgency_score": 55,
+      "strategic_score": 60,
+      "deadline_score": 60,
+      "department_score": 70,
+      "availability_score": 85,
+      "total_score": 66,
+      "recommendation_reason": "Academic project activity, but overlaps with a higher-priority examination."
+    },
+    {
+      "request_id": 7,
+      "strategic_priority_id": 12,
+      "urgency_score": 85,
+      "strategic_score": 90,
+      "deadline_score": 90,
+      "department_score": 85,
+      "availability_score": 95,
+      "total_score": 89,
+      "recommendation_reason": "Scheduled medical procedure with high operational importance."
+    },
+    {
+      "request_id": 8,
+      "strategic_priority_id": 10,
+      "urgency_score": 100,
+      "strategic_score": 100,
+      "deadline_score": 100,
+      "department_score": 100,
+      "availability_score": 95,
+      "total_score": 99,
+      "recommendation_reason": "Emergency requirement receives maximum priority."
+    },
+    {
+      "request_id": 9,
+      "strategic_priority_id": 14,
+      "urgency_score": 80,
+      "strategic_score": 90,
+      "deadline_score": 80,
+      "department_score": 85,
+      "availability_score": 90,
+      "total_score": 85,
+      "recommendation_reason": "Community relief/outreach activity aligned with organizational priority."
+    },
+    {
+      "request_id": 10,
+      "strategic_priority_id": 15,
+      "urgency_score": 70,
+      "strategic_score": 85,
+      "deadline_score": 80,
+      "department_score": 80,
+      "availability_score": 95,
+      "total_score": 82,
+      "recommendation_reason": "Supports a scheduled learning activity and the school's student-learning priority."
+    },
+    {
+      "request_id": 11,
+      "strategic_priority_id": 16,
+      "urgency_score": 85,
+      "strategic_score": 90,
+      "deadline_score": 85,
+      "department_score": 80,
+      "availability_score": 100,
+      "total_score": 88,
+      "recommendation_reason": "Supports planned resident services with an available shared vehicle."
+    },
+    {
+      "request_id": 12,
+      "strategic_priority_id": 17,
+      "urgency_score": 65,
+      "strategic_score": 75,
+      "deadline_score": 70,
+      "department_score": 75,
+      "availability_score": 95,
+      "total_score": 76,
+      "recommendation_reason": "Supports a scheduled community workshop using available equipment."
+    }
+  ],
+  "conflicts": [
+    {
+      "organization_id": 1,
+      "request_id": 2,
+      "conflicting_request_id": 1,
+      "resource_id": 1,
+      "conflict_type": "Time Overlap",
+      "conflict_description": "Finance review overlaps with the strategic client presentation in Conference Room A.",
+      "severity": "High",
+      "resolution_status": "Open"
+    },
+    {
+      "organization_id": 2,
+      "request_id": 6,
+      "conflicting_request_id": 5,
+      "resource_id": 7,
+      "conflict_type": "Time Overlap",
+      "conflict_description": "Student project demonstration overlaps with the scheduled examination.",
+      "severity": "Critical",
+      "resolution_status": "Under Review"
+    }
+  ],
+  "approvals": [
+    {
+      "request_id": 1,
+      "approver_id": 2,
+      "approval_level": 1,
+      "decision": "Pending",
+      "decision_reason": null,
+      "decided_at": null
+    },
+    {
+      "request_id": 2,
+      "approver_id": 2,
+      "approval_level": 1,
+      "decision": "Pending",
+      "decision_reason": null,
+      "decided_at": null
+    },
+    {
+      "request_id": 3,
+      "approver_id": 3,
+      "approval_level": 1,
+      "decision": "Approved",
+      "decision_reason": "Strategic R&D request aligned with current organizational priority.",
+      "decided_at": "2026-10-01 11:00:00"
+    },
+    {
+      "request_id": 4,
+      "approver_id": 2,
+      "approval_level": 1,
+      "decision": "Pending",
+      "decision_reason": null,
+      "decided_at": null
+    },
+    {
+      "request_id": 5,
+      "approver_id": 5,
+      "approval_level": 1,
+      "decision": "Approved",
+      "decision_reason": "Examination request approved due to critical academic requirement.",
+      "decided_at": "2026-10-01 12:00:00"
+    },
+    {
+      "request_id": 6,
+      "approver_id": 5,
+      "approval_level": 1,
+      "decision": "Pending",
+      "decision_reason": null,
+      "decided_at": null
+    },
+    {
+      "request_id": 7,
+      "approver_id": 8,
+      "approval_level": 1,
+      "decision": "Approved",
+      "decision_reason": "Scheduled diagnostic procedure approved.",
+      "decided_at": "2026-10-01 13:00:00"
+    },
+    {
+      "request_id": 8,
+      "approver_id": 9,
+      "approval_level": 1,
+      "decision": "Approved",
+      "decision_reason": "Emergency request approved immediately.",
+      "decided_at": "2026-10-01 14:00:00"
+    },
+    {
+      "request_id": 9,
+      "approver_id": 10,
+      "approval_level": 1,
+      "decision": "Pending",
+      "decision_reason": null,
+      "decided_at": null
+    }
+  ],
+  "allocations": [
+    {
+      "organization_id": 1,
+      "request_id": 3,
+      "resource_id": 3,
+      "allocated_to_user_id": 3,
+      "allocated_by_user_id": 3,
+      "allocation_date": "2026-10-16",
+      "start_time": "10:00:00",
+      "end_time": "14:00:00",
+      "allocation_status": "Scheduled",
+      "recommendation_score": 94
+    },
+    {
+      "organization_id": 2,
+      "request_id": 5,
+      "resource_id": 7,
+      "allocated_to_user_id": 5,
+      "allocated_by_user_id": 5,
+      "allocation_date": "2026-10-20",
+      "start_time": "10:00:00",
+      "end_time": "13:00:00",
+      "allocation_status": "Scheduled",
+      "recommendation_score": 97
+    },
+    {
+      "organization_id": 3,
+      "request_id": 7,
+      "resource_id": 11,
+      "allocated_to_user_id": 8,
+      "allocated_by_user_id": 8,
+      "allocation_date": "2026-10-18",
+      "start_time": "11:00:00",
+      "end_time": "13:00:00",
+      "allocation_status": "Scheduled",
+      "recommendation_score": 89
+    },
+    {
+      "organization_id": 3,
+      "request_id": 8,
+      "resource_id": 13,
+      "allocated_to_user_id": 9,
+      "allocated_by_user_id": 9,
+      "allocation_date": "2026-10-18",
+      "start_time": "12:00:00",
+      "end_time": "16:00:00",
+      "allocation_status": "Active",
+      "recommendation_score": 99
+    }
+  ],
+  "resource_utilization": [
+    {
+      "organization_id": 1,
+      "resource_id": 3,
+      "allocation_id": 1,
+      "utilization_date": "2026-10-16",
+      "start_time": "10:00:00",
+      "end_time": "14:00:00",
+      "duration_minutes": 240,
+      "used_by_user_id": 3,
+      "department_id": 4,
+      "purpose": "AI model training experiment",
+      "utilization_status": "Scheduled"
+    },
+    {
+      "organization_id": 2,
+      "resource_id": 7,
+      "allocation_id": 2,
+      "utilization_date": "2026-10-20",
+      "start_time": "10:00:00",
+      "end_time": "13:00:00",
+      "duration_minutes": 180,
+      "used_by_user_id": 5,
+      "department_id": 6,
+      "purpose": "DAA Practical Examination",
+      "utilization_status": "Scheduled"
+    },
+    {
+      "organization_id": 3,
+      "resource_id": 11,
+      "allocation_id": 3,
+      "utilization_date": "2026-10-18",
+      "start_time": "11:00:00",
+      "end_time": "13:00:00",
+      "duration_minutes": 120,
+      "used_by_user_id": 8,
+      "department_id": 10,
+      "purpose": "Scheduled MRI diagnostic procedure",
+      "utilization_status": "Scheduled"
+    },
+    {
+      "organization_id": 3,
+      "resource_id": 13,
+      "allocation_id": 4,
+      "utilization_date": "2026-10-18",
+      "start_time": "12:00:00",
+      "end_time": "16:00:00",
+      "duration_minutes": 240,
+      "used_by_user_id": 9,
+      "department_id": 12,
+      "purpose": "Emergency department requirement",
+      "utilization_status": "In Use"
+    }
+  ],
+  "audit_logs": [
+    {
+      "organization_id": 1,
+      "user_id": 3,
+      "action_type": "CREATE",
+      "entity_type": "RESOURCE_REQUEST",
+      "entity_id": 3,
+      "description": "Created request for strategic AI project resource"
+    },
+    {
+      "organization_id": 1,
+      "user_id": 3,
+      "action_type": "APPROVE",
+      "entity_type": "RESOURCE_REQUEST",
+      "entity_id": 3,
+      "description": "Approved strategic R&D resource request"
+    },
+    {
+      "organization_id": 2,
+      "user_id": 5,
+      "action_type": "APPROVE",
+      "entity_type": "RESOURCE_REQUEST",
+      "entity_id": 5,
+      "description": "Approved examination laboratory request"
+    },
+    {
+      "organization_id": 3,
+      "user_id": 9,
+      "action_type": "ALLOCATE",
+      "entity_type": "RESOURCE_REQUEST",
+      "entity_id": 8,
+      "description": "Allocated emergency ventilator for emergency requirement"
+    }
+  ]
+}

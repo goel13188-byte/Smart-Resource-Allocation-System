@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Resource Allocation</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="authScreen" class="auth-shell">
+      <div class="auth-panel">
+        <div class="brand-block">
+          <h1>Smart Resource Allocation</h1>
+          <p>Manage resources, requests, approvals, conflicts, and utilization across your organization.</p>
+        </div>
+
+        <div class="auth-tabs">
+          <button class="tab-button active" data-target="loginForm">Login</button>
+          <button class="tab-button" data-target="registerForm">Register</button>
+        </div>
+
+        <form id="loginForm" class="auth-form active">
+          <label>
+            Organization Code
+            <input type="text" id="loginOrganizationCode" placeholder="ABC" />
+          </label>
+          <label>
+            Member Code
+            <input type="text" id="loginMemberCode" placeholder="ADM-101" />
+          </label>
+          <label>
+            Password
+            <input type="password" id="loginPassword" placeholder="********" />
+          </label>
+          <button type="submit">Login</button>
+        </form>
+
+        <form id="registerForm" class="auth-form">
+          <label>
+            Organization Name
+            <input type="text" id="orgName" placeholder="ABC Technologies Pvt. Ltd." />
+          </label>
+          <label>
+            Organization Code
+            <input type="text" id="orgCode" placeholder="ABC" />
+          </label>
+          <label>
+            Organization Type
+            <select id="orgType"></select>
+          </label>
+          <label>
+            Official Email
+            <input type="email" id="orgEmail" placeholder="admin@company.com" />
+          </label>
+          <label>
+            Admin Name
+            <input type="text" id="adminName" placeholder="Jane Doe" />
+          </label>
+          <label>
+            Password
+            <input type="password" id="registerPassword" placeholder="********" />
+          </label>
+          <button type="submit">Create Organization</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="appShell" class="app-shell hidden">
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebarNav">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <div class="brand-mark">SMART</div>
+        </div>
+
+        <div class="profile-panel">
+          <button class="profile-trigger" id="profileTrigger" type="button">
+            <div class="profile-avatar" id="profileAvatar">U</div>
+            <div class="profile-meta">
+              <strong id="profileName">User</strong>
+              <span id="profilePost">Role</span>
+            </div>
+            <span class="profile-caret">▾</span>
+          </button>
+
+          <div class="profile-dropdown hidden" id="profileDropdown">
+            <div class="profile-header">
+              <div class="profile-avatar large" id="profileAvatarLarge">U</div>
+              <div>
+                <div class="org-pill" id="profileOrgType">Organization Type</div>
+                <strong id="profileOrgName">Organization</strong>
+              </div>
+            </div>
+
+            <div class="profile-grid">
+              <div>
+                <span>Organization</span>
+                <strong id="dropdownOrgName">-</strong>
+              </div>
+              <div>
+                <span>User Name</span>
+                <strong id="dropdownUserName">-</strong>
+              </div>
+              <div>
+                <span>User ID</span>
+                <strong id="dropdownUserId">-</strong>
+              </div>
+              <div>
+                <span>Post</span>
+                <strong id="dropdownPost">-</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav id="sidebarNav" class="sidebar-nav hidden" aria-label="Main navigation">
+          <button class="nav-item active" data-section="dashboard" data-icon="dashboard">Dashboard</button>
+          <button class="nav-item" data-section="resources" data-icon="resource">Resources</button>
+          <button class="nav-item" data-section="requests" data-icon="request">Resource Requests</button>
+          <button class="nav-item" data-section="allocations" data-icon="allocation">Allocations</button>
+          <button class="nav-item" data-section="conflicts" data-icon="conflict">Conflicts</button>
+          <button class="nav-item" data-section="members" data-icon="user">Members</button>
+          <button class="nav-item" data-section="departments" data-icon="department">Departments</button>
+          <button class="nav-item" data-section="priorities" data-icon="priority">Priorities</button>
+          <button class="nav-item" data-section="trends" data-icon="strategic">Strategic Trends</button>
+          <button class="nav-item" data-section="reports" data-icon="reports">Reports</button>
+          <button id="logoutButton" class="nav-item danger" data-icon="logout">Logout</button>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <h3 id="welcomeTitle">Dashboard</h3>
+          </div>
+          <div class="topbar-info">
+            <span id="currentUserLabel">User</span>
+          </div>
+        </header>
+
+        <section id="dashboard" class="panel-section active">
+          <div id="statsGrid" class="stats-grid"></div>
+          <div class="split-grid">
+            <div class="card">
+              <h4>Recent Requests</h4>
+              <div id="recentRequestsList"></div>
+            </div>
+            <div class="card">
+              <h4>Open Conflicts</h4>
+              <div id="conflictSummaryList"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="resources" class="panel-section">
+          <div class="section-header">
+            <div>
+              <h3>Resource Management</h3>
+              <p class="section-subtitle">View, allocate, and monitor organizational resources.</p>
+            </div>
+            <button class="secondary-btn" id="resourceProposalBtn" type="button">Request New Resource</button>
+            <button class="primary-btn" id="addResourceBtn" type="button"><span class="button-icon" data-icon="add"></span>Add Resource</button>
+          </div>
+          <p id="resourcePermissionNote" class="permission-note hidden" role="status">Resources are read-only for your account. Resource changes require a Logistics or Resource Manager, or a senior organization leader. You can submit a resource proposal for review.</p>
+          <form id="resourceForm" class="data-form hidden">
+            <input type="hidden" id="resourceId" />
+            <div class="form-grid">
+              <label>Code<input type="text" id="resourceCode" maxlength="80" required /></label>
+              <label>Name<input type="text" id="resourceName" maxlength="150" required /></label>
+              <label>Type<select id="resourceType" required></select></label>
+              <label>Resource Photo<input type="file" id="resourceImageFile" accept="image/png,image/jpeg,image/webp,image/gif" /><input type="hidden" id="resourceImageName" /><img class="image-preview hidden" id="resourceImagePreview" alt="Resource photo preview" /></label>
+              <label>Location<input type="text" id="resourceLocation" /></label>
+              <label>Capacity<input type="number" id="resourceCapacity" min="1" step="1" value="1" required /></label>
+              <label>Quantity<input type="number" id="resourceQuantity" min="1" step="1" value="1" required /></label>
+              <label>Department<select id="resourceDepartment"></select></label>
+              <label>Status<select id="resourceStatus">
+                <option>Available</option>
+                <option>Partially Available</option>
+                <option>Allocated</option>
+                <option>Maintenance</option>
+                <option>Inactive</option>
+              </select></label>
+              <label>Responsible Person<input type="text" id="resourceResponsiblePerson" maxlength="150" /></label>
+              <label class="resource-description">Description<textarea id="resourceDescription" rows="3" maxlength="2000"></textarea></label>
+            </div>
+            <div class="button-row">
+              <button type="submit" class="primary-btn">Save Resource</button>
+              <button type="button" class="secondary-btn" id="cancelResourceForm">Cancel</button>
+            </div>
+          </form>
+          <div class="resource-filters" aria-label="Resource search and filters">
+            <label class="resource-search">Search resources<input id="resourceSearch" type="search" placeholder="Name, code, or location" /></label>
+            <label>Category<select id="resourceCategoryFilter"><option value="">All categories</option></select></label>
+            <label>Department<select id="resourceDepartmentFilter"><option value="">All departments</option></select></label>
+            <label>Status<select id="resourceStatusFilter"><option value="">All statuses</option></select></label>
+            <label>Availability<select id="resourceAvailabilityFilter"><option value="">All availability</option><option value="available">Available</option><option value="unavailable">Unavailable</option></select></label>
+            <button class="secondary-btn" id="clearResourceFilters" type="button"><span class="button-icon" data-icon="filter"></span>Clear filters</button>
+          </div>
+          <p id="resourceResultCount" class="result-count" aria-live="polite"></p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Image</th><th>Name</th><th>Code</th><th>Category</th><th>Department</th><th>Location</th><th>Quantity</th><th>Capacity</th><th>Status / availability</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="resourcesTableBody"><tr><td colspan="10">Resources load after sign-in.</td></tr></tbody>
+            </table>
+          </div>
+
+          <div class="section-header proposal-heading">
+            <h3>Resource Addition Requests</h3>
+          </div>
+          <form id="resourceProposalForm" class="data-form hidden">
+            <div class="form-grid">
+              <label>Resource Code<input type="text" id="proposalCode" required maxlength="80" /></label>
+              <label>Resource Name<input type="text" id="proposalName" required maxlength="150" /></label>
+              <label>Category<select id="proposalType" required></select></label>
+              <label>Reference Photo<input type="file" id="proposalImageFile" accept="image/png,image/jpeg,image/webp,image/gif" /><input type="hidden" id="proposalImageName" /><img class="image-preview hidden" id="proposalImagePreview" alt="Reference photo preview" /></label>
+              <label>Location<input type="text" id="proposalLocation" maxlength="150" /></label>
+              <label>Quantity<input type="number" id="proposalQuantity" min="1" value="1" required /></label>
+              <label>Department<select id="proposalDepartment"></select></label>
+              <label>Priority Category<select id="proposalPriority" required></select></label>
+              <label class="proposal-justification">Business Need<textarea id="proposalJustification" rows="3" required maxlength="2000"></textarea></label>
+            </div>
+            <div class="button-row">
+              <button type="submit" class="primary-btn">Submit Request</button>
+              <button type="button" class="secondary-btn" id="cancelResourceProposal">Cancel</button>
+            </div>
+          </form>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Photo</th><th>Requested Resource</th><th>Requester</th><th>Department</th><th>Priority</th><th>Business Need</th><th>Status</th><th>Review</th></tr></thead>
+              <tbody id="resourceProposalsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="requests" class="panel-section">
+          <div class="section-header">
+            <h3>Resource Requests</h3>
+            <button class="primary-btn" id="addRequestBtn">Create Request</button>
+          </div>
+          <form id="requestForm" class="data-form hidden">
+            <input type="hidden" id="requestId" />
+            <div class="form-grid">
+              <label>Resource<select id="requestResource" required></select></label>
+              <label>Project Name<input type="text" id="requestProjectName" maxlength="150" required /></label>
+              <label>Purpose<input type="text" id="requestPurpose" maxlength="255" required /></label>
+              <label>Requested Date<input type="date" id="requestDate" required /></label>
+              <label>Start Time<input type="time" id="requestStart" required /></label>
+              <label>End Time<input type="time" id="requestEnd" required /></label>
+              <label>Priority<select id="requestPriority">
+                <option>Low</option>
+                <option selected>Medium</option>
+                <option>High</option>
+                <option>Critical</option>
+              </select></label>
+              <label>Deadline<input type="date" id="requestDeadline" /></label>
+            </div>
+            <div class="button-row">
+              <button type="submit" class="primary-btn">Submit Request</button>
+              <button type="button" class="secondary-btn" id="cancelRequestForm">Cancel</button>
+            </div>
+          </form>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Project</th><th>Resource</th><th>Date</th><th>Priority</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="requestsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="allocations" class="panel-section">
+          <div class="section-header">
+            <h3>Allocations</h3>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Resource</th><th>Date</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
+              <tbody id="allocationsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="conflicts" class="panel-section">
+          <div class="section-header"><h3>Conflicts</h3></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Resource</th><th>Type</th><th>Severity</th><th>Status</th><th>Details</th><th>Manager Actions</th></tr></thead>
+              <tbody id="conflictsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="members" class="panel-section">
+          <div class="section-header"><h3>Members</h3></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Member Code</th><th>Email</th><th>Role</th><th>Status</th></tr></thead>
+              <tbody id="membersTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="departments" class="panel-section">
+          <div class="section-header"><h3>Departments</h3></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Code</th><th>Status</th></tr></thead>
+              <tbody id="departmentsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="priorities" class="panel-section">
+          <div class="section-header"><h3>Organizational Priorities</h3></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Priority</th><th>Level</th><th>Description</th></tr></thead>
+              <tbody id="prioritiesTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="trends" class="panel-section">
+          <div class="section-header"><h3>Strategic Trends</h3></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Sector</th><th>Period</th><th>Direction</th><th>Value</th></tr></thead>
+              <tbody id="trendsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="reports" class="panel-section">
+          <div class="section-header"><h3>Reports</h3></div>
+          <div class="card">
+            <p>Utilization, resource usage, and conflict reports are available from the API and will populate here as data is submitted.</p>
+            <div id="reportSummary" class="report-box"></div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <dialog id="resourceDetailDialog" class="resource-dialog" aria-labelledby="resourceDetailTitle">
+      <div class="resource-dialog-header">
+        <h2 id="resourceDetailTitle">Resource details</h2>
+        <button type="button" class="icon-button" id="closeResourceDetail" aria-label="Close resource details">×</button>
+      </div>
+      <div id="resourceDetailContent"></div>
+      <div class="button-row">
+        <button type="button" class="primary-btn" id="requestResourceFromDetail">Request Resource</button>
+        <button type="button" class="secondary-btn" id="closeResourceDetailFooter">Close</button>
+      </div>
+    </dialog>
+    <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

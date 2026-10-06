@@ -1,0 +1,154 @@
+SMART RESOURCE ALLOCATION
+DEMO ORGANIZATION DATA
+=======================
+
+PURPOSE
+-------
+This inventory describes the sample records in server/data/dataset.json. The dataset covers every organization type configured by the application. It is imported into MySQL; it is not frontend mock data.
+
+DEMO LOGIN
+----------
+Seeded member password: password
+Login fields: Organization Code + Member ID + password
+
+The dataset importer creates bcrypt hashes for the seeded password. Every member listed below can be used after a successful dataset import.
+
+ORGANIZATION COVERAGE
+---------------------
+
+1. COMPANY
+Organization: ABC Technologies Pvt. Ltd.
+Organization code: ABC-TECH-001
+Organization type: Company
+Members:
+  EMP1001 - Rahul Sharma, Employee (Member)
+  EMP1002 - Priya Mehta, Manager (Manager)
+  EMP1003 - Arjun Rao, Manager (Manager)
+  EMP1004 - Neha Verma, Employee (Member)
+Sample resources:
+  MR-001 - Conference Room A
+  MR-002 - Engineering Meeting Room
+  EQ-001 - AI GPU Workstation
+  PJ-001 - Projector A
+  WS-001 - Collaboration Workspace
+  VH-001 - Company Vehicle A
+Sample requests: Project Alpha, Quarterly Finance Review, AI Research Project, Client Beta
+
+2. COLLEGE / UNIVERSITY
+Organization: Demo University
+Organization code: SRM-DEMO-001
+Organization type: College / University
+Members:
+  FAC2001 - Dr. Ananya Singh, Faculty (Manager)
+  FAC2002 - Dr. Karan Kumar, Faculty (Manager)
+  STU2001 - Aman Gupta, Student (Member)
+Sample resources: Computer Laboratory 1, Electronics Laboratory, Central Library Hall, Smart Classroom 101
+Sample requests: DAA Practical Examination, Final Project Demo
+
+3. HOSPITAL
+Organization: CityCare Hospital
+Organization code: CITY-HOSP-001
+Organization type: Hospital
+Members:
+  DOC3001 - Dr. Meera Iyer, Doctor (Manager)
+  DOC3002 - Dr. Vikram Shah, Doctor (Manager)
+Sample resources: MRI Machine 01, Operation Theatre 1, Emergency Ventilator 02
+Sample requests: Patient Diagnostic Case, Emergency Case
+
+4. NGO
+Organization: Green Future Foundation
+Organization code: GREEN-NGO-001
+Organization type: NGO
+Members:
+  EMP4001 - Riya Joshi, Coordinator (Manager)
+Sample resources: Field Vehicle
+Sample request: Community Outreach
+
+5. SCHOOL
+Organization: Northfield Public School
+Organization code: NORTH-SCHOOL-001
+Organization type: School
+Members:
+  SCL5001 - Maya Nair, Manager (Resource Manager access)
+  SCL5002 - Ishaan Das, Employee (Member)
+Sample resource: Science Learning Classroom
+Sample request: Science Discovery Week
+
+6. GOVERNMENT ORGANIZATION
+Organization: Civic Services Department
+Organization code: CIVIC-GOV-001
+Organization type: Government Organization
+Members:
+  GOV6001 - Aditi Rao, Manager (Resource Manager access)
+  GOV6002 - Kabir Sen, Employee (Member)
+Sample resource: Community Service Vehicle
+Sample request: Neighbourhood Service Round
+
+7. OTHER
+Organization: Community Innovation Centre
+Organization code: COMMUNITY-OTHER-001
+Organization type: Other
+Members:
+  OTH7001 - Noor Thomas, Manager (Resource Manager access)
+  OTH7002 - Dev Patel, Employee (Member)
+Sample resource: Portable Community Equipment Kit
+Sample request: Digital Skills Workshop
+
+REQUEST WALKTHROUGH DATA
+------------------------
+Dates use YYYY-MM-DD. Times are local 24-hour time. Scores and statuses are the values stored in the seed dataset.
+
+Organization        Request / project                  Resource                         Date        Time             Priority  Score  Status
+ABC-TECH-001        Project Alpha                      Conference Room A                2026-10-15  14:00-16:00      High      91     Recommended
+ABC-TECH-001        Quarterly Finance Review           Conference Room A                2026-10-15  14:00-15:00      Medium    52     Conflict
+ABC-TECH-001        AI Research Project                AI GPU Workstation               2026-10-16  10:00-14:00      Critical  94     Approved
+ABC-TECH-001        Client Beta                        Projector A                      2026-10-17  11:00-12:00      High      83     Pending
+SRM-DEMO-001        DAA Practical Examination          Computer Laboratory 1            2026-10-20  10:00-13:00      Critical  97     Approved
+SRM-DEMO-001        Final Project Demo                 Computer Laboratory 1            2026-10-20  12:00-14:00      Medium    66     Conflict
+CITY-HOSP-001       Patient Diagnostic Case            MRI Machine 01                   2026-10-18  11:00-13:00      High      89     Approved
+CITY-HOSP-001       Emergency Case                     Emergency Ventilator 02          2026-10-18  12:00-16:00      Critical  99     Allocated
+GREEN-NGO-001       Community Outreach                 Field Vehicle                    2026-10-19  08:00-16:00      High      85     Pending
+NORTH-SCHOOL-001    Science Discovery Week             Science Learning Classroom       2026-10-12  10:00-12:00      High      82     Pending
+CIVIC-GOV-001       Neighbourhood Service Round        Community Service Vehicle         2026-10-13  09:00-13:00      Critical  88     Pending
+COMMUNITY-OTHER-001 Digital Skills Workshop            Portable Community Equipment Kit 2026-10-14  13:00-15:00      High      76     Pending
+
+ORGANIZATION PRIORITIES
+-----------------------
+ABC-TECH-001: Strategic AI Project (Critical); Important Client Requirements (High); Research & Development (High); Employee Training (Medium); Routine Internal Meetings (Low)
+SRM-DEMO-001: Examinations (Critical); Academic Classes (High); Research (High); Student Events (Medium)
+CITY-HOSP-001: Emergency Care (Critical); Scheduled Surgery (High); Routine Diagnosis (Medium)
+GREEN-NGO-001: Relief Operations (Critical); Community Awareness (High)
+NORTH-SCHOOL-001: Student Learning (High)
+CIVIC-GOV-001: Essential Public Services (Critical)
+COMMUNITY-OTHER-001: Community Programs (High)
+
+RESOURCE MANAGEMENT ACCESS
+--------------------------
+The three added organization scenarios each include an account with explicit Resource Manager access. That access is separate from the employee/member accounts. The existing ABC-TECH-001 employee Rahul Sharma remains an Employee with Member access.
+
+SEEDED RECORD COUNTS
+--------------------
+Organization types: 7
+Organizations: 7
+Departments: 19
+Members: 16
+Resources: 17
+Resource availability periods: 77
+Organization priorities: 17
+Strategic trends: 11
+Resource requests: 12
+Request priority factors: 12
+
+IMPORT SAFETY
+-------------
+Run npm run seed:dataset only against a fresh, empty application database. The importer checks for existing organizations and stops if any are present; it does not reset or overwrite an existing dataset. Starting the server creates missing schema/reference tables but does not import these sample organizations.
+
+Commands from the project root:
+  npm install
+  npm start
+  npm run seed:dataset
+
+After import, start the server and open:
+  http://localhost:5001
+
+The application needs valid local MySQL credentials in .env. The importer and login cannot be verified until the MySQL service accepts those credentials.
