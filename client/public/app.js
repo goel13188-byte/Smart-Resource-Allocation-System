@@ -181,6 +181,9 @@ function renderProfile() {
   dropdownUserId.textContent = String(userId);
   dropdownPost.textContent = role;
   currentUserLabel.textContent = `${userName} • ${role}`;
+  const firstName = userName.split(' ')[0] || 'there';
+  const greetingNode = document.getElementById('dashboardGreeting');
+  if (greetingNode) greetingNode.textContent = `Good to see you, ${firstName}`;
 }
 
 function selectAuthTab(targetId) {
