@@ -12,6 +12,7 @@ const state = {
   conflicts: [],
   allocations: [],
   approvals: [],
+  maintenance: [],
   departments: [],
   members: [],
   priorities: [],
@@ -70,6 +71,7 @@ function setSection(sectionName) {
     resources: ['Resources', 'Discover, monitor, and manage organizational capacity.'],
     requests: ['Resource Requests', 'Review demand and move requests toward a decision.'],
     allocations: ['Allocations', 'See how approved resources are being scheduled.'],
+    maintenance: ['Maintenance & Asset Lifecycle', 'Keep resources healthy, traceable, and operational.'],
     calendar: ['Resource Calendar', 'Plan bookings, spot demand, and see committed capacity.'],
     approvals: ['Approval Center', 'Review requests, conflicts, and decisions in one place.'],
     conflicts: ['Conflicts', 'Resolve competing demands before they block operations.'],
@@ -110,6 +112,7 @@ function iconMarkup(name, altText = '') {
     strategic: '<path d="M4 19V5m0 14h16M7 16l4-5 3 2 5-7M7 16h.01M11 11h.01M14 13h.01M19 6h.01"/>',
     reports: '<path d="M6 3h9l4 4v14H6V3Zm9 0v5h4M9 12h6M9 16h6M9 8h2"/>',
     approval: '<path d="M5 4h14v16H5V4Zm4 5 2 2 4-4M9 15h6"/>',
+    maintenance: '<path d="M14.7 6.3a4.5 4.5 0 0 0-5.9 5.9L3 18l3 3 5.8-5.8a4.5 4.5 0 0 0 5.9-5.9l-2.4 2.4-2.2-2.2 2.4-2.4Z"/>',
     logout: '<path d="M10 5H5v14h5M14 8l4 4-4 4m4-4H9"/>',
     add: '<path d="M12 5v14M5 12h14"/>',
     filter: '<path d="M4 5h16l-6.5 7.5V18l-3 1v-6.5L4 5Z"/>',
@@ -525,6 +528,7 @@ async function loadProtectedData() {
     renderAllocations();
     renderCalendar();
     renderApprovals();
+    renderMaintenance();
     renderConflicts();
     renderMembers();
     renderDepartments();
@@ -603,6 +607,13 @@ async function handleResourceSubmit(event) {
     department_id: document.getElementById('resourceDepartment').value || null,
     responsible_person: document.getElementById('resourceResponsiblePerson').value.trim(),
     status: document.getElementById('resourceStatus').value,
+    asset_tag: document.getElementById('resourceAssetTag').value.trim(),
+    serial_number: document.getElementById('resourceSerialNumber').value.trim(),
+    vendor_name: document.getElementById('resourceVendorName').value.trim(),
+    purchase_date: document.getElementById('resourcePurchaseDate').value || null,
+    warranty_until: document.getElementById('resourceWarrantyUntil').value || null,
+    lifecycle_status: document.getElementById('resourceLifecycleStatus').value,
+    next_maintenance_at: document.getElementById('resourceNextMaintenance').value || null,
     image_name: document.getElementById('resourceImageName').value,
     image_data: state.resourceImageData,
   };
@@ -1162,6 +1173,39 @@ function renderApprovals() {
   }).join('');
 }
 
+function renderMaintenance() {
+  const open = state.maintenance.filter((item) => !['Completed', 'Cancelled'].includes(item.status)).length;
+  const critical = state.maintenance.filter((item) => String(item.priority || '').toLowerCase() === 'critical' && !['Completed', 'Cancelled'].includes(item.status)).length;
+  const due = state.resources.filter((item) => item.next_maintenance_at && new Date(item.next_maintenance_at) <= new Date()).length;
+  const completed = state.maintenance.filter((item) => item.status === 'Completed').length;
+  const strip = document.getElementById('maintenanceSummaryStrip');
+  if (strip) strip.innerHTML = [
+    ['OPEN TICKETS', open, 'Maintenance work in progress', 'violet'],
+    ['CRITICAL', critical, 'Needs immediate attention', 'red'],
+    ['MAINTENANCE DUE', due, 'Resources past service date', 'amber'],
+    ['COMPLETED', completed, 'Completed maintenance records', 'green'],
+  ].map(([label,value,note,tone]) => `<div class="operation-summary-card ${tone}"><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+
+  const body = document.getElementById('maintenanceTableBody');
+  if (!body) return;
+  body.innerHTML = state.maintenance.map((ticket) => {
+    const statusClass = ticket.status === 'Completed' ? 'green' : ticket.status === 'Cancelled' ? 'red' : 'orange';
+    const action = state.authority.canDecideRequests && !['Completed','Cancelled'].includes(ticket.status)
+      ? `<div class="action-group"><button class="action-btn action-approve" data-action="complete-maintenance" data-id="${ticket.id}">Complete</button><button class="action-btn" data-action="progress-maintenance" data-id="${ticket.id}">In Progress</button></div>`
+      : '—';
+    return `<tr>
+      <td><strong>${escapeHtml(ticket.resource_name || 'Resource')}</strong><br><small>${escapeHtml(ticket.resource_code || '')}</small></td>
+      <td><strong>${escapeHtml(ticket.title)}</strong><br><small>#${ticket.id} · ${escapeHtml(ticket.description || '')}</small></td>
+      <td>${escapeHtml(ticket.ticket_type || 'Preventive')}</td>
+      <td><span class="tag blue">${escapeHtml(ticket.priority || 'Medium')}</span></td>
+      <td><span class="tag ${statusClass}">${escapeHtml(ticket.status || 'Open')}</span></td>
+      <td>${escapeHtml(String(ticket.scheduled_date || '—').slice(0,10))}</td>
+      <td>${escapeHtml(ticket.assigned_to_name || 'Unassigned')}</td>
+      <td>${action}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8">No maintenance tickets yet.</td></tr>';
+}
+
 function renderConflicts() {
   const conflictSummary = document.getElementById('conflictSummaryStrip');
   if (conflictSummary) {
@@ -1281,6 +1325,13 @@ async function handleEditResource(id) {
     document.getElementById('resourceQuantity').value = resource.quantity || 1;
     document.getElementById('resourceDepartment').value = resource.department_id || '';
     document.getElementById('resourceResponsiblePerson').value = resource.responsible_person || '';
+    document.getElementById('resourceAssetTag').value = resource.asset_tag || '';
+    document.getElementById('resourceSerialNumber').value = resource.serial_number || '';
+    document.getElementById('resourceVendorName').value = resource.vendor_name || '';
+    document.getElementById('resourcePurchaseDate').value = String(resource.purchase_date || '').slice(0,10);
+    document.getElementById('resourceWarrantyUntil').value = String(resource.warranty_until || '').slice(0,10);
+    document.getElementById('resourceLifecycleStatus').value = resource.lifecycle_status || 'Active';
+    document.getElementById('resourceNextMaintenance').value = resource.next_maintenance_at ? String(resource.next_maintenance_at).replace(' ', 'T').slice(0,16) : '';
     document.getElementById('resourceStatus').value = resource.status || 'Available';
     const imageName = resource.image_name || '';
     const imagePath = imageName && !String(imageName).startsWith('/') ? `/images/${encodeURIComponent(imageName)}` : imageName;
@@ -1536,6 +1587,34 @@ function addGlobalEventHandlers() {
   document.getElementById('calendarPrev')?.addEventListener('click', () => { calendarWeekOffset -= 1; renderCalendar(); });
   document.getElementById('calendarNext')?.addEventListener('click', () => { calendarWeekOffset += 1; renderCalendar(); });
   document.getElementById('calendarToday')?.addEventListener('click', () => { calendarWeekOffset = 0; renderCalendar(); });
+  document.getElementById('createMaintenanceBtn')?.addEventListener('click', () => {
+    setSection('maintenance');
+    const form = document.getElementById('maintenanceForm');
+    form.classList.remove('hidden');
+    populateSelect('maintenanceResource', state.resources.filter((r) => !['Inactive','Retired'].includes(r.status)).map((r) => ({ value: r.id, label: `${r.name} · ${r.code}` })));
+  });
+  document.getElementById('cancelMaintenanceForm')?.addEventListener('click', () => document.getElementById('maintenanceForm').classList.add('hidden'));
+  document.getElementById('maintenanceForm')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      await apiFetch('/api/maintenance', { method: 'POST', body: JSON.stringify({
+        resource_id: Number(document.getElementById('maintenanceResource').value),
+        ticket_type: document.getElementById('maintenanceType').value,
+        priority: document.getElementById('maintenancePriority').value,
+        title: document.getElementById('maintenanceTitle').value.trim(),
+        scheduled_date: document.getElementById('maintenanceScheduledDate').value || null,
+        estimated_cost: Number(document.getElementById('maintenanceEstimatedCost').value) || 0,
+        description: document.getElementById('maintenanceDescription').value.trim(),
+      })});
+      event.target.reset();
+      event.target.classList.add('hidden');
+      await loadProtectedData();
+      showToast('Maintenance ticket created and resource lifecycle updated.', 'success');
+    } catch (error) {
+      showToast(error.message || 'Unable to create maintenance ticket.', 'error');
+    }
+  });
+
   document.getElementById('calendarCreateRequest')?.addEventListener('click', () => {
     setSection('requests');
     requestForm.reset();
@@ -1558,8 +1637,21 @@ function addGlobalEventHandlers() {
     if (action === 'delete-resource') handleDeleteResource(id);
     if (action === 'decide-request') handleRequestDecision(id, decision);
     if (action === 'resolve-conflict') handleConflictDecision(id, status);
+    if (action === 'complete-maintenance') handleMaintenanceDecision(id, 'Completed');
+    if (action === 'progress-maintenance') handleMaintenanceDecision(id, 'In Progress');
     if (action === 'review-resource-addition') handleResourceAdditionReview(id, decision);
   });
+}
+
+async function handleMaintenanceDecision(id, status) {
+  if (!state.authority.canDecideRequests) return showToast('Only managers can update maintenance work.', 'error');
+  try {
+    await apiFetch(`/api/maintenance/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    await loadProtectedData();
+    showToast(`Maintenance ticket marked ${status.toLowerCase()}.`, 'success');
+  } catch (error) {
+    showToast(error.message || 'Unable to update maintenance ticket.', 'error');
+  }
 }
 
 async function handleResourceAdditionReview(id, decision) {
