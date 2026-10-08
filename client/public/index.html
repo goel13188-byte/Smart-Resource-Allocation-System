@@ -134,15 +134,36 @@
 
       <main class="main-content">
         <header class="topbar">
-          <div>
+          <div class="topbar-heading">
+            <span class="topbar-kicker">RESOURCE OPERATIONS</span>
             <h3 id="welcomeTitle">Dashboard</h3>
+            <p id="sectionSubtitle">Your resource command center.</p>
           </div>
-          <div class="topbar-info">
-            <span id="currentUserLabel">User</span>
+          <div class="topbar-tools">
+            <label class="global-search" aria-label="Global resource search">
+              <span class="global-search-icon" data-icon="search"></span>
+              <input id="globalSearch" type="search" placeholder="Search resources..." autocomplete="off" />
+              <kbd>Ctrl K</kbd>
+            </label>
+            <span class="system-status"><i></i> System healthy</span>
+            <div class="topbar-info">
+              <span id="currentUserLabel">User</span>
+            </div>
           </div>
         </header>
 
         <section id="dashboard" class="panel-section active">
+          <div class="dashboard-context">
+            <div>
+              <span class="context-kicker">OPERATIONS OVERVIEW</span>
+              <h2 id="dashboardGreeting">Good to see you</h2>
+              <p>See what is available, what needs a decision, and where resources are being used.</p>
+            </div>
+            <div class="context-meta">
+              <span class="live-badge"><i></i> Live workspace</span>
+              <span id="dashboardDate"></span>
+            </div>
+          </div>
           <div class="dashboard-hero">
             <div class="hero-copy">
               <span class="eyebrow">COMMAND CENTER</span>
@@ -179,6 +200,7 @@
               <div id="conflictSummaryList"></div>
             </div>
           </div>
+          <div id="dashboardInsights" class="dashboard-insights" aria-label="Resource intelligence"></div>
         </section>
 
         <section id="resources" class="panel-section">
@@ -226,6 +248,8 @@
             <button class="secondary-btn" id="clearResourceFilters" type="button"><span class="button-icon" data-icon="filter"></span>Clear filters</button>
           </div>
           <p id="resourceResultCount" class="result-count" aria-live="polite"></p>
+          <div id="resourceCardGrid" class="resource-card-grid" aria-label="Resource overview"></div>
+          <div class="detail-table-label"><span>DETAILED INVENTORY</span><small>Full resource register</small></div>
           <div class="table-wrap">
             <table>
               <thead>
@@ -268,6 +292,7 @@
             <h3>Resource Requests</h3>
             <button class="primary-btn" id="addRequestBtn">Create Request</button>
           </div>
+          <div id="requestSummaryStrip" class="operation-summary-strip"></div>
           <form id="requestForm" class="data-form hidden">
             <input type="hidden" id="requestId" />
             <div class="form-grid">
@@ -300,8 +325,9 @@
 
         <section id="allocations" class="panel-section">
           <div class="section-header">
-            <h3>Allocations</h3>
+            <div><h3>Allocations</h3><p class="section-subtitle">A live view of where organizational capacity is committed.</p></div>
           </div>
+          <div id="allocationSummaryStrip" class="operation-summary-strip"></div>
           <div class="table-wrap">
             <table>
               <thead><tr><th>Resource</th><th>Date</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
@@ -311,7 +337,8 @@
         </section>
 
         <section id="conflicts" class="panel-section">
-          <div class="section-header"><h3>Conflicts</h3></div>
+          <div class="section-header"><div><h3>Conflicts</h3><p class="section-subtitle">Surface collisions early and resolve them before allocation is blocked.</p></div></div>
+          <div id="conflictSummaryStrip" class="conflict-summary-strip"></div>
           <div class="table-wrap">
             <table>
               <thead><tr><th>Resource</th><th>Type</th><th>Severity</th><th>Status</th><th>Details</th><th>Manager Actions</th></tr></thead>

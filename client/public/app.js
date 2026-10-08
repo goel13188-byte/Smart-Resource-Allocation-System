@@ -64,7 +64,25 @@ function setSection(sectionName) {
     button.classList.toggle('active', button.dataset.section === sectionName);
   });
 
-  welcomeTitle.textContent = sectionName.charAt(0).toUpperCase() + sectionName.slice(1);
+  const sectionMeta = {
+    dashboard: ['Dashboard', 'Your resource command center.'],
+    resources: ['Resources', 'Discover, monitor, and manage organizational capacity.'],
+    requests: ['Resource Requests', 'Review demand and move requests toward a decision.'],
+    allocations: ['Allocations', 'See how approved resources are being scheduled.'],
+    conflicts: ['Conflicts', 'Resolve competing demands before they block operations.'],
+    members: ['Members', 'Understand who is requesting and managing resources.'],
+    departments: ['Departments', 'View the organizational structure behind allocation.'],
+    priorities: ['Priorities', 'Keep resource decisions aligned with organizational priorities.'],
+    trends: ['Strategic Trends', 'Turn resource activity into operational insight.'],
+    reports: ['Reports', 'A concise view of utilization, demand, and risk.'],
+  };
+  const [title, subtitle] = sectionMeta[sectionName] || [sectionName, 'Manage your resource operations.'];
+  welcomeTitle.textContent = title;
+  const subtitleNode = document.getElementById('sectionSubtitle');
+  if (subtitleNode) subtitleNode.textContent = subtitle;
+
+  const globalSearch = document.getElementById('globalSearch');
+  if (globalSearch && sectionName !== 'resources' && globalSearch.value) globalSearch.value = '';
 }
 
 function setAuthView(isLoggedIn) {
@@ -77,8 +95,32 @@ function normalizeAuthority(value) {
 }
 
 function iconMarkup(name, altText = '') {
-  const iconName = /^[a-z0-9_-]+$/i.test(name) ? name : 'info';
-  return `<img class="ui-icon" src="/icons/${iconName}.png" alt="${escapeHtml(altText)}" onerror="this.hidden=true">`;
+  const icons = {
+    dashboard: '<path d="M4 13h6V4H4v9Zm10 7h6V4h-6v16ZM4 20h6v-3H4v3Zm10-7h6v-3h-6v3Z"/>',
+    resource: '<path d="M4 5.5 12 2l8 3.5v13L12 22l-8-3.5v-13Zm8 1.8 5.5-2.4L12 2.5 6.5 4.9 12 7.3Zm-6 1.5v8.4l5 2.2V11L6 8.8Zm7 2.2v9.2l5-2.2V8.8l-5 2.2Z"/>',
+    request: '<path d="M5 3h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-6l-4 4v-4H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm3 5h8M8 12h5"/>',
+    allocation: '<path d="M5 4h5v5H5V4Zm9 11h5v5h-5v-5ZM14 6h2a3 3 0 0 1 3 3v6M10 6h2M7.5 9v6a3 3 0 0 0 3 3H14"/>',
+    conflict: '<path d="m12 3 9 16H3L12 3Zm0 5v5m0 3v1"/>',
+    user: '<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0"/>',
+    department: '<path d="M4 20V9l8-5 8 5v11H4Zm4 0v-6h8v6M8 9h.01M12 9h.01M16 9h.01"/>',
+    priority: '<path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/>',
+    strategic: '<path d="M4 19V5m0 14h16M7 16l4-5 3 2 5-7M7 16h.01M11 11h.01M14 13h.01M19 6h.01"/>',
+    reports: '<path d="M6 3h9l4 4v14H6V3Zm9 0v5h4M9 12h6M9 16h6M9 8h2"/>',
+    logout: '<path d="M10 5H5v14h5M14 8l4 4-4 4m4-4H9"/>',
+    add: '<path d="M12 5v14M5 12h14"/>',
+    filter: '<path d="M4 5h16l-6.5 7.5V18l-3 1v-6.5L4 5Z"/>',
+    view: '<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Zm9.5 2.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>',
+    edit: '<path d="m4 16-.8 4.8L8 20l11.2-11.2-4-4L4 16Zm10-8 4 4M12 20h8"/>',
+    delete: '<path d="M5 7h14m-9-4h4l1 4H9l1-4Zm-3 4 1 13h8l1-13M10 11v8m4-8v8"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8v.01"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/>',
+    bell: '<path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>',
+    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+    spark: '<path d="m12 2 1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2Z"/>'
+
+  };
+  const svg = icons[name] || icons.info;
+  return `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${svg}</svg>`;
 }
 
 function showToast(message, type = 'info') {
@@ -139,6 +181,9 @@ function renderProfile() {
   dropdownUserId.textContent = String(userId);
   dropdownPost.textContent = role;
   currentUserLabel.textContent = `${userName} • ${role}`;
+  const firstName = userName.split(' ')[0] || 'there';
+  const greetingNode = document.getElementById('dashboardGreeting');
+  if (greetingNode) greetingNode.textContent = `Good to see you, ${firstName}`;
 }
 
 function selectAuthTab(targetId) {
@@ -469,6 +514,45 @@ function renderDashboard() {
         <div class="card-item"><strong>${conflict.conflict_type || 'Time overlap'}</strong><br /><small>${conflict.description || 'Conflict detected'}</small></div>
       `).join('')
     : '<p>No open conflicts.</p>';
+
+  const utilization = Math.min(100, Math.max(0, Number(state.summary.resource_utilization_percentage || 0)));
+  const total = Number(state.summary.total_resources || 0);
+  const available = Number(state.summary.available_resources || 0);
+  const allocated = Number(state.summary.allocated_resources || 0);
+  const maintenance = state.resources.filter((item) => String(item.status || '').toLowerCase() === 'maintenance').length;
+  const topResources = state.resources.slice(0, 4);
+  const insights = document.getElementById('dashboardInsights');
+  if (insights) {
+    insights.innerHTML = `
+      <div class="insight-card utilization-card">
+        <div class="insight-heading"><span class="insight-kicker">RESOURCE HEALTH</span><span class="insight-status"><i></i> Live</span></div>
+        <div class="health-layout">
+          <div class="health-ring" style="--progress:${utilization * 3.6}deg"><strong>${utilization}%</strong><span>utilized</span></div>
+          <div class="health-metrics">
+            <div><span>Available</span><b>${available}</b></div>
+            <div><span>Allocated</span><b>${allocated}</b></div>
+            <div><span>Maintenance</span><b>${maintenance}</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-heading"><span class="insight-kicker">RESOURCE PULSE</span><span class="insight-link">Live inventory</span></div>
+        <div class="pulse-list">
+          ${topResources.length ? topResources.map((resource) => {
+            const status = String(resource.status || 'Available');
+            const cls = status.toLowerCase().includes('maintenance') ? 'warning' : status.toLowerCase().includes('allocated') ? 'busy' : 'ready';
+            return `<div class="pulse-row"><span class="pulse-dot ${cls}"></span><div><strong>${escapeHtml(resource.name || 'Resource')}</strong><small>${escapeHtml(resource.location || resource.resource_type_name || 'Organizational resource')}</small></div><em>${escapeHtml(status)}</em></div>`;
+          }).join('') : '<div class="empty-state">No resource activity yet.</div>'}
+        </div>
+      </div>
+      <div class="insight-card decision-card">
+        <div class="insight-heading"><span class="insight-kicker">DECISION QUEUE</span><span class="queue-count">${Number(state.summary.pending_requests || 0)}</span></div>
+        <h4>${Number(state.summary.pending_requests || 0) ? 'Requests need your attention' : 'Everything is under control'}</h4>
+        <p>${Number(state.summary.pending_requests || 0) ? 'Review pending requests and resolve conflicts before they affect allocation.' : 'No pending requests are waiting for a decision right now.'}</p>
+        <button type="button" class="insight-action" data-quick-section="requests">Open request queue <span>→</span></button>
+      </div>
+    `;
+  }
 }
 
 function populateDepartmentOptions() {
@@ -549,6 +633,36 @@ function renderResources() {
   });
 
   document.getElementById('resourceResultCount').textContent = `${resources.length} of ${state.resources.length} resources`;
+
+  const resourceCards = document.getElementById('resourceCardGrid');
+  if (resourceCards) {
+    resourceCards.innerHTML = resources.length ? resources.map((resource) => {
+      const available = ['Available', 'Partially Available'].includes(resource.status);
+      const statusClass = resource.status === 'Available' ? 'green' : ['Inactive', 'Maintenance'].includes(resource.status) ? 'orange' : 'blue';
+      return `
+        <article class="resource-card">
+          <div class="resource-card-image">${renderResourceImage(resource.image_name, resource.name, resource.resource_type_name)}</div>
+          <div class="resource-card-body">
+            <div class="resource-card-topline">
+              <span class="tag ${statusClass}">${escapeHtml(resource.status || 'Unknown')}</span>
+              <span class="resource-card-code">${escapeHtml(resource.code || '')}</span>
+            </div>
+            <h4>${escapeHtml(resource.name || 'Resource')}</h4>
+            <p class="resource-card-type">${escapeHtml(resource.resource_type_name || 'General')} · ${escapeHtml(resource.department_name || 'Unassigned')}</p>
+            <div class="resource-card-meta">
+              <span><b>${Number(resource.quantity) || 0}</b> units</span>
+              <span><b>${Number(resource.capacity) || 0}</b> capacity</span>
+              <span>${escapeHtml(resource.location || 'Location not set')}</span>
+            </div>
+            <div class="resource-card-footer">
+              <span class="availability-dot ${available ? 'available' : 'unavailable'}"><i></i>${available ? 'Ready to request' : 'Not available'}</span>
+              <button class="resource-card-view" data-action="view-resource" data-id="${Number(resource.id)}">View resource →</button>
+            </div>
+          </div>
+        </article>`;
+    }).join('') : '<div class="empty-state resource-empty">No resources match your filters.</div>';
+  }
+
   const actions = (resource) => `
     <div class="action-group">
       <button class="action-btn" data-action="view-resource" data-id="${Number(resource.id)}" aria-label="View ${escapeHtml(resource.name)}">${iconMarkup('view')}<span>View</span></button>
@@ -622,6 +736,19 @@ function renderResourceAdditionRequests() {
 }
 
 function renderRequests() {
+  const requestSummary = document.getElementById('requestSummaryStrip');
+  if (requestSummary) {
+    const pending = state.requests.filter((r) => ['Pending', 'Under Review'].includes(r.status)).length;
+    const approved = state.requests.filter((r) => ['Approved', 'Allocated'].includes(r.status)).length;
+    const high = state.requests.filter((r) => ['High', 'Critical'].includes(r.priority_level)).length;
+    const conflicts = state.requests.filter((r) => String(r.status || '').toLowerCase().includes('conflict')).length;
+    requestSummary.innerHTML = [
+      ['PENDING DECISIONS', pending, 'Requests waiting for review', 'violet'],
+      ['APPROVED / ALLOCATED', approved, 'Requests moving forward', 'green'],
+      ['HIGH PRIORITY', high, 'High-impact demand', 'amber'],
+      ['CONFLICTING', conflicts, 'Needs resolution', 'red'],
+    ].map(([label, value, note, tone]) => `<div class="operation-summary-card ${tone}"><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  }
   const rows = state.requests.map((request) => {
     const isOpen = !['Approved', 'Rejected', 'Allocated', 'Completed', 'Cancelled'].includes(request.status);
     const approvalActions = state.authority.canDecideRequests && isOpen
@@ -642,6 +769,20 @@ function renderRequests() {
 }
 
 function renderAllocations() {
+  const allocationSummary = document.getElementById('allocationSummaryStrip');
+  if (allocationSummary) {
+    const scheduled = state.allocations.filter((a) => !['Cancelled', 'Rejected'].includes(a.status)).length;
+    const today = new Date().toISOString().slice(0, 10);
+    const todayCount = state.allocations.filter((a) => String(a.allocated_date || '').slice(0, 10) === today).length;
+    const active = state.allocations.filter((a) => String(a.status || '').toLowerCase().includes('active')).length;
+    const resourcesUsed = new Set(state.allocations.map((a) => a.resource_name).filter(Boolean)).size;
+    allocationSummary.innerHTML = [
+      ['SCHEDULED', scheduled, 'Committed allocation slots', 'violet'],
+      ['TODAY', todayCount, 'Allocation slots today', 'cyan'],
+      ['ACTIVE', active, 'Currently in progress', 'green'],
+      ['RESOURCES USED', resourcesUsed, 'Distinct resources allocated', 'amber'],
+    ].map(([label, value, note, tone]) => `<div class="operation-summary-card ${tone}"><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  }
   const rows = state.allocations.map((allocation) => `
     <tr>
       <td>${allocation.resource_name || 'N/A'}</td>
@@ -655,6 +796,19 @@ function renderAllocations() {
 }
 
 function renderConflicts() {
+  const conflictSummary = document.getElementById('conflictSummaryStrip');
+  if (conflictSummary) {
+    const open = state.conflicts.filter((c) => ['Open', 'Under Review'].includes(c.status)).length;
+    const critical = state.conflicts.filter((c) => String(c.severity || '').toLowerCase() === 'critical').length;
+    const high = state.conflicts.filter((c) => String(c.severity || '').toLowerCase() === 'high').length;
+    const resolved = state.conflicts.filter((c) => String(c.status || '').toLowerCase() === 'resolved').length;
+    conflictSummary.innerHTML = [
+      ['OPEN', open, 'Conflicts needing attention', 'red'],
+      ['CRITICAL', critical, 'Immediate operational risk', 'critical'],
+      ['HIGH', high, 'High-priority collisions', 'amber'],
+      ['RESOLVED', resolved, 'Already handled', 'green'],
+    ].map(([label, value, note, tone]) => `<div class="operation-summary-card ${tone}"><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  }
   const rows = state.conflicts.map((conflict) => {
     const canAct = state.authority.canDecideRequests && ['Open', 'Under Review'].includes(conflict.status);
     const actions = canAct
@@ -875,6 +1029,36 @@ function addGlobalEventHandlers() {
     }
   });
 
+  const globalSearch = document.getElementById('globalSearch');
+  globalSearch?.addEventListener('input', (event) => {
+    const query = event.target.value.trim();
+    if (!query) return;
+    setSection('resources');
+    const resourceSearch = document.getElementById('resourceSearch');
+    if (resourceSearch) {
+      resourceSearch.value = query;
+      renderResources();
+    }
+  });
+  globalSearch?.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      event.target.value = '';
+      event.target.blur();
+      return;
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      setSection('resources');
+      document.getElementById('resourceSearch')?.focus();
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      globalSearch?.focus();
+    }
+  });
+
   tabButtons.forEach((button) => {
     button.addEventListener('click', () => selectAuthTab(button.dataset.target));
   });
@@ -989,6 +1173,8 @@ function closeNavigation() {
 }
 
 async function bootstrap() {
+  const dateNode = document.getElementById('dashboardDate');
+  if (dateNode) dateNode.textContent = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' }).format(new Date());
   setAuthView(Boolean(state.token));
   addGlobalEventHandlers();
   await loadOrganizationTypes();
