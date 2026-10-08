@@ -11,6 +11,7 @@ const state = {
   requests: [],
   conflicts: [],
   allocations: [],
+  approvals: [],
   departments: [],
   members: [],
   priorities: [],
@@ -69,6 +70,8 @@ function setSection(sectionName) {
     resources: ['Resources', 'Discover, monitor, and manage organizational capacity.'],
     requests: ['Resource Requests', 'Review demand and move requests toward a decision.'],
     allocations: ['Allocations', 'See how approved resources are being scheduled.'],
+    calendar: ['Resource Calendar', 'Plan bookings, spot demand, and see committed capacity.'],
+    approvals: ['Approval Center', 'Review requests, conflicts, and decisions in one place.'],
     conflicts: ['Conflicts', 'Resolve competing demands before they block operations.'],
     members: ['Members', 'Understand who is requesting and managing resources.'],
     departments: ['Departments', 'View the organizational structure behind allocation.'],
@@ -106,6 +109,7 @@ function iconMarkup(name, altText = '') {
     priority: '<path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/>',
     strategic: '<path d="M4 19V5m0 14h16M7 16l4-5 3 2 5-7M7 16h.01M11 11h.01M14 13h.01M19 6h.01"/>',
     reports: '<path d="M6 3h9l4 4v14H6V3Zm9 0v5h4M9 12h6M9 16h6M9 8h2"/>',
+    approval: '<path d="M5 4h14v16H5V4Zm4 5 2 2 4-4M9 15h6"/>',
     logout: '<path d="M10 5H5v14h5M14 8l4 4-4 4m4-4H9"/>',
     add: '<path d="M12 5v14M5 12h14"/>',
     filter: '<path d="M4 5h16l-6.5 7.5V18l-3 1v-6.5L4 5Z"/>',
@@ -482,12 +486,13 @@ async function loadProtectedData() {
     state.organization = userResponse.data?.organization || null;
     renderProfile();
 
-    const [summaryRes, resourcesRes, requestsRes, conflictsRes, allocRes, departmentsRes, membersRes, prioritiesRes, trendsRes, resourceAdditionsRes] = await Promise.all([
+    const [summaryRes, resourcesRes, requestsRes, conflictsRes, allocRes, approvalsRes, departmentsRes, membersRes, prioritiesRes, trendsRes, resourceAdditionsRes] = await Promise.all([
       apiFetch('/api/dashboard/summary'),
       apiFetch('/api/resources'),
       apiFetch('/api/requests'),
       apiFetch('/api/conflicts'),
       apiFetch('/api/allocations'),
+      apiFetch('/api/approvals').catch(() => ({ data: [] })),
       apiFetch('/api/departments'),
       apiFetch('/api/users'),
       apiFetch('/api/priorities'),
@@ -504,6 +509,7 @@ async function loadProtectedData() {
     state.requests = requestsRes.data || [];
     state.conflicts = conflictsRes.data || [];
     state.allocations = allocRes.data || [];
+    state.approvals = approvalsRes.data || [];
     state.departments = departmentsRes.data || [];
     state.members = membersRes.data || [];
     state.priorities = prioritiesRes.data || [];
@@ -517,6 +523,8 @@ async function loadProtectedData() {
     renderResourceAdditionRequests();
     renderRequests();
     renderAllocations();
+    renderCalendar();
+    renderApprovals();
     renderConflicts();
     renderMembers();
     renderDepartments();
@@ -988,6 +996,172 @@ function renderAllocations() {
   document.getElementById('allocationsTableBody').innerHTML = rows || '<tr><td colspan="5">No allocations found.</td></tr>';
 }
 
+
+let calendarWeekOffset = 0;
+
+function localDateKey(date) {
+  const d = new Date(date);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function getCalendarWeekStart(offset = 0) {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  const day = date.getDay();
+  date.setDate(date.getDate() - day + (offset * 7));
+  return date;
+}
+
+function formatCalendarDate(date) {
+  return new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' }).format(date);
+}
+
+function minutesFromTime(value) {
+  const [hours, minutes] = String(value || '00:00').slice(0, 5).split(':').map(Number);
+  return (hours * 60) + minutes;
+}
+
+function calendarEventForAllocation(item) {
+  return {
+    kind: 'allocated',
+    title: item.resource_name || 'Resource',
+    subtitle: item.status || 'Scheduled',
+    date: String(item.allocated_date || '').slice(0, 10),
+    start: item.start_time,
+    end: item.end_time,
+    id: item.id,
+  };
+}
+
+function calendarEventForRequest(item) {
+  const status = String(item.status || '').toLowerCase();
+  return {
+    kind: status.includes('conflict') ? 'conflict' : 'pending',
+    title: item.project_name || `Request #${item.id}`,
+    subtitle: item.resource_name || 'Resource request',
+    date: String(item.requested_date || '').slice(0, 10),
+    start: item.start_time,
+    end: item.end_time,
+    id: item.id,
+  };
+}
+
+function renderCalendar() {
+  const root = document.getElementById('resourceCalendar');
+  if (!root) return;
+
+  const start = getCalendarWeekStart(calendarWeekOffset);
+  const days = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(start);
+    date.setDate(start.getDate() + index);
+    return date;
+  });
+  const end = days[6];
+  const range = document.getElementById('calendarRangeLabel');
+  const hint = document.getElementById('calendarRangeHint');
+  if (range) range.textContent = `${new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(start)} – ${new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).format(end)}`;
+  if (hint) hint.textContent = calendarWeekOffset === 0 ? 'Current operational week' : calendarWeekOffset < 0 ? 'Previous schedule' : 'Upcoming schedule';
+
+  const events = [
+    ...state.allocations.filter((item) => !['Cancelled', 'Rejected', 'Completed'].includes(item.status)).map(calendarEventForAllocation),
+    ...state.requests.filter((item) => !['Rejected', 'Cancelled', 'Completed', 'Allocated', 'Approved'].includes(item.status)).map(calendarEventForRequest),
+  ];
+
+  const hours = Array.from({ length: 12 }, (_, index) => 8 + index);
+  root.innerHTML = `
+    <div class="calendar-grid">
+      <div class="calendar-corner">TIME</div>
+      ${days.map((day) => {
+        const today = localDateKey(day) === localDateKey(new Date());
+        return `<div class="calendar-day-head ${today ? 'today' : ''}"><span>${day.toLocaleDateString(undefined, { weekday: 'short' })}</span><strong>${day.getDate()}</strong></div>`;
+      }).join('')}
+      ${hours.map((hour) => `
+        <div class="calendar-time"><span>${String(hour).padStart(2, '0')}:00</span></div>
+        ${days.map((day) => {
+          const key = localDateKey(day);
+          const dayEvents = events.filter((event) => event.date === key && Math.floor(minutesFromTime(event.start) / 60) === hour);
+          return `<div class="calendar-slot">${dayEvents.map((event) => {
+            const duration = Math.max(1, minutesFromTime(event.end) - minutesFromTime(event.start));
+            const span = Math.min(2.8, Math.max(1.1, duration / 60));
+            return `<button type="button" class="calendar-event ${event.kind}" data-calendar-request="${event.id}" data-calendar-kind="${event.kind}" style="--event-span:${span}">
+              <strong>${escapeHtml(event.title)}</strong>
+              <small>${escapeHtml(String(event.start || '').slice(0,5))}–${escapeHtml(String(event.end || '').slice(0,5))}</small>
+              <em>${escapeHtml(event.subtitle)}</em>
+            </button>`;
+          }).join('')}</div>`;
+        }).join('')}
+      `).join('')}
+    </div>`;
+
+  root.querySelectorAll('[data-calendar-request]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const id = Number(button.dataset.calendarRequest);
+      if (button.dataset.calendarKind === 'allocated') {
+        setSection('allocations');
+        showToast('This booking is already allocated.', 'info');
+      } else {
+        setSection('requests');
+        const request = state.requests.find((item) => Number(item.id) === id);
+        if (request) {
+          requestForm.reset();
+          document.getElementById('requestResource').value = String(request.resource_id || '');
+          document.getElementById('requestProjectName').value = request.project_name || '';
+          document.getElementById('requestPurpose').value = request.purpose || '';
+          document.getElementById('requestDate').value = String(request.requested_date || '').slice(0,10);
+          document.getElementById('requestStart').value = String(request.start_time || '').slice(0,5);
+          document.getElementById('requestEnd').value = String(request.end_time || '').slice(0,5);
+          document.getElementById('requestPriority').value = request.priority_level || 'Medium';
+          requestForm.classList.remove('hidden');
+          renderRequestAvailability();
+        }
+      }
+    });
+  });
+}
+
+function renderApprovals() {
+  const pending = state.requests.filter((request) => !['Approved','Rejected','Allocated','Completed','Cancelled'].includes(request.status));
+  const approved = state.requests.filter((request) => ['Approved','Allocated'].includes(request.status)).length;
+  const conflicts = state.requests.filter((request) => String(request.status || '').toLowerCase().includes('conflict')).length;
+  const strip = document.getElementById('approvalSummaryStrip');
+  if (strip) {
+    strip.innerHTML = [
+      ['AWAITING DECISION', pending.length, 'Requests in the queue', 'violet'],
+      ['APPROVED / ALLOCATED', approved, 'Requests moving forward', 'green'],
+      ['CONFLICT RISK', conflicts, 'Requests needing attention', 'red'],
+      ['DECISIONS LOGGED', state.approvals.length, 'Approval records', 'cyan'],
+    ].map(([label, value, note, tone]) => `<div class="operation-summary-card ${tone}"><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  }
+
+  const queue = document.getElementById('approvalQueue');
+  if (!queue) return;
+  if (!pending.length) {
+    queue.innerHTML = '<div class="approval-empty"><span>✓</span><div><strong>Decision queue is clear</strong><small>No open requests currently require approval.</small></div></div>';
+    return;
+  }
+
+  queue.innerHTML = pending.slice(0, 12).map((request) => {
+    const canDecide = state.authority.canDecideRequests;
+    const isConflict = String(request.status || '').toLowerCase().includes('conflict');
+    return `
+      <div class="approval-item ${isConflict ? 'risk' : ''}">
+        <div class="approval-item-icon">${iconMarkup(isConflict ? 'conflict' : 'request')}</div>
+        <div class="approval-item-copy">
+          <strong>${escapeHtml(request.project_name || `Request #${request.id}`)}</strong>
+          <small>${escapeHtml(request.resource_name || 'Resource')} · ${escapeHtml(String(request.requested_date || '').slice(0,10))} · ${escapeHtml(String(request.start_time || '').slice(0,5))}–${escapeHtml(String(request.end_time || '').slice(0,5))}</small>
+          <span class="approval-item-meta"><b>${escapeHtml(request.priority_level || 'Medium')}</b> priority · ${escapeHtml(request.status || 'Pending')}</span>
+        </div>
+        <div class="approval-actions">
+          ${canDecide && !isConflict ? `<button class="action-btn action-approve" data-action="decide-request" data-decision="Approved" data-id="${request.id}">Approve</button>` : ''}
+          ${canDecide ? `<button class="action-btn action-reject" data-action="decide-request" data-decision="Rejected" data-id="${request.id}">Reject</button>` : '<span class="approval-readonly">Review only</span>'}
+        </div>
+      </div>`;
+  }).join('');
+}
+
 function renderConflicts() {
   const conflictSummary = document.getElementById('conflictSummaryStrip');
   if (conflictSummary) {
@@ -1355,6 +1529,19 @@ function addGlobalEventHandlers() {
   document.getElementById('addRequestBtn').addEventListener('click', () => {
     requestForm.reset();
     document.getElementById('requestForm').classList.remove('hidden');
+    setSection('requests');
+    renderRequestAvailability();
+  });
+
+  document.getElementById('calendarPrev')?.addEventListener('click', () => { calendarWeekOffset -= 1; renderCalendar(); });
+  document.getElementById('calendarNext')?.addEventListener('click', () => { calendarWeekOffset += 1; renderCalendar(); });
+  document.getElementById('calendarToday')?.addEventListener('click', () => { calendarWeekOffset = 0; renderCalendar(); });
+  document.getElementById('calendarCreateRequest')?.addEventListener('click', () => {
+    setSection('requests');
+    requestForm.reset();
+    requestForm.classList.remove('hidden');
+    renderRequestAvailability();
+    requestForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   document.getElementById('cancelRequestForm').addEventListener('click', () => requestForm.classList.add('hidden'));
