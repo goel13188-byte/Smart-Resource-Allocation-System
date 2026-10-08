@@ -282,6 +282,199 @@ function clearImagePicker(inputId, previewId, hiddenId, stateKey, existingImage 
   }
 }
 
+
+function normalizeSearchText(value) {
+  return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function getSearchResults(query) {
+  const q = normalizeSearchText(query);
+  if (!q) return [];
+  const score = (text) => {
+    const value = normalizeSearchText(text);
+    if (!value) return 0;
+    if (value === q) return 100;
+    if (value.startsWith(q)) return 80;
+    if (value.includes(q)) return 55;
+    const words = q.split(' ');
+    return words.filter((word) => value.includes(word)).length * 12;
+  };
+
+  const results = [];
+  state.resources.forEach((item) => {
+    const value = score([item.name, item.code, item.location, item.resource_type_name, item.department_name].join(' '));
+    if (value) results.push({ type: 'Resource', title: item.name, meta: [item.code, item.location, item.status].filter(Boolean).join(' · '), section: 'resources', id: item.id, score: value + 10, icon: 'resource' });
+  });
+  state.requests.forEach((item) => {
+    const value = score([item.project_name, item.resource_name, item.requester_name, item.status, item.priority_level].join(' '));
+    if (value) results.push({ type: 'Request', title: item.project_name || `Request #${item.id}`, meta: [item.resource_name, item.status, item.priority_level].filter(Boolean).join(' · '), section: 'requests', id: item.id, score: value, icon: 'request' });
+  });
+  state.members.forEach((item) => {
+    const value = score([item.full_name, item.member_code, item.email, item.role, item.department_name].join(' '));
+    if (value) results.push({ type: 'People', title: item.full_name, meta: [item.member_code, item.role, item.department_name].filter(Boolean).join(' · '), section: 'members', id: item.id, score: value, icon: 'user' });
+  });
+  state.departments.forEach((item) => {
+    const value = score([item.name, item.code, item.status].join(' '));
+    if (value) results.push({ type: 'Department', title: item.name, meta: [item.code, item.status].filter(Boolean).join(' · '), section: 'departments', id: item.id, score: value, icon: 'department' });
+  });
+
+  return results.sort((a, b) => b.score - a.score).slice(0, 9);
+}
+
+let globalSearchActiveIndex = -1;
+
+function renderGlobalSearchResults(query) {
+  const panel = document.getElementById('globalSearchResults');
+  const input = document.getElementById('globalSearch');
+  const clear = document.getElementById('globalSearchClear');
+  if (!panel || !input) return;
+
+  const cleanQuery = query.trim();
+  clear?.classList.toggle('hidden', !cleanQuery);
+
+  if (!cleanQuery) {
+    panel.innerHTML = `
+      <div class="search-empty">
+        <span class="search-empty-key">⌕</span>
+        <div><strong>Search your workspace</strong><small>Find resources, requests, people and departments.</small></div>
+      </div>`;
+    panel.classList.remove('hidden');
+    input.setAttribute('aria-expanded', 'true');
+    globalSearchActiveIndex = -1;
+    return;
+  }
+
+  const results = getSearchResults(cleanQuery);
+  if (!results.length) {
+    panel.innerHTML = `
+      <div class="search-empty">
+        <span class="search-empty-key">×</span>
+        <div><strong>No matches found</strong><small>Try a resource name, code, location, project or person.</small></div>
+      </div>`;
+  } else {
+    const grouped = results.reduce((map, result) => {
+      (map[result.type] ||= []).push(result);
+      return map;
+    }, {});
+    panel.innerHTML = Object.entries(grouped).map(([group, items]) => `
+      <div class="search-group">
+        <div class="search-group-title">${escapeHtml(group)}</div>
+        ${items.map((item) => `
+          <button type="button" class="search-result" role="option" data-search-section="${item.section}" data-search-id="${Number(item.id)}">
+            <span class="search-result-icon">${iconMarkup(item.icon)}</span>
+            <span class="search-result-copy"><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.meta || '')}</small></span>
+            <span class="search-result-arrow">↗</span>
+          </button>`).join('')}
+      </div>`).join('');
+  }
+  panel.classList.remove('hidden');
+  input.setAttribute('aria-expanded', 'true');
+  globalSearchActiveIndex = -1;
+}
+
+function closeGlobalSearch(clearValue = false) {
+  const panel = document.getElementById('globalSearchResults');
+  const input = document.getElementById('globalSearch');
+  const clear = document.getElementById('globalSearchClear');
+  if (clearValue && input) input.value = '';
+  panel?.classList.add('hidden');
+  input?.setAttribute('aria-expanded', 'false');
+  clear?.classList.toggle('hidden', !input?.value);
+  globalSearchActiveIndex = -1;
+}
+
+function chooseGlobalSearchResult(section, id) {
+  const input = document.getElementById('globalSearch');
+  setSection(section);
+  closeGlobalSearch();
+  if (section === 'resources') {
+    const resource = state.resources.find((item) => Number(item.id) === Number(id));
+    const search = document.getElementById('resourceSearch');
+    if (resource && search) {
+      search.value = resource.name || resource.code || '';
+      renderResources();
+    }
+  }
+  const sectionNode = document.getElementById(section);
+  sectionNode?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  input?.blur();
+}
+
+function renderRequestAvailability() {
+  const panel = document.getElementById('requestAvailabilityPanel');
+  if (!panel) return;
+  const resourceId = Number(document.getElementById('requestResource')?.value);
+  const date = document.getElementById('requestDate')?.value;
+  const start = document.getElementById('requestStart')?.value;
+  const end = document.getElementById('requestEnd')?.value;
+
+  if (!resourceId || !date || !start || !end) {
+    panel.innerHTML = `
+      <div class="availability-panel-placeholder">
+        <span class="availability-panel-icon">◌</span>
+        <div><strong>Availability check</strong><small>Select a resource, date and time to preview availability before submitting.</small></div>
+      </div>`;
+    return;
+  }
+
+  const resource = state.resources.find((item) => Number(item.id) === resourceId);
+  if (!resource) return;
+
+  const toMinutesLocal = (value) => {
+    const [h, m] = String(value).split(':').map(Number);
+    return (h * 60) + m;
+  };
+  const requestedStart = toMinutesLocal(start);
+  const requestedEnd = toMinutesLocal(end);
+  if (requestedEnd <= requestedStart) {
+    panel.innerHTML = `
+      <div class="availability-state warning">
+        <span class="availability-state-icon">!</span>
+        <div><strong>Time window needs attention</strong><small>End time must be later than start time.</small></div>
+      </div>`;
+    return;
+  }
+
+  const sameWindow = (itemDate, itemStart, itemEnd) => String(itemDate || '').slice(0, 10) === date
+    && toMinutesLocal(String(itemStart).slice(0, 5)) < requestedEnd
+    && toMinutesLocal(String(itemEnd).slice(0, 5)) > requestedStart;
+
+  const allocations = state.allocations.filter((item) => Number(item.resource_id || state.resources.find((r) => r.name === item.resource_name)?.id) === resourceId
+    && !['Cancelled', 'Rejected', 'Completed'].includes(item.status)
+    && sameWindow(item.allocated_date, item.start_time, item.end_time));
+
+  const openRequests = state.requests.filter((item) => {
+    const requestResource = state.resources.find((r) => r.name === item.resource_name);
+    return Number(requestResource?.id) === resourceId
+      && !['Rejected', 'Cancelled', 'Completed', 'Allocated', 'Approved'].includes(item.status)
+      && sameWindow(item.requested_date, item.start_time, item.end_time);
+  });
+
+  const resourceReady = ['Available', 'Partially Available'].includes(resource.status);
+  const hasConflict = allocations.length > 0 || openRequests.length > 0;
+  let tone = resourceReady && !hasConflict ? 'available' : 'warning';
+  let title = resourceReady && !hasConflict ? 'Looks available' : 'Potential scheduling conflict';
+  let detail = resourceReady && !hasConflict
+    ? 'No current allocation or open request overlaps this time window.'
+    : `${allocations.length ? `${allocations.length} existing allocation${allocations.length > 1 ? 's' : ''}` : ''}${allocations.length && openRequests.length ? ' and ' : ''}${openRequests.length ? `${openRequests.length} open request${openRequests.length > 1 ? 's' : ''}` : ''} overlap this window.`;
+
+  panel.innerHTML = `
+    <div class="availability-state ${tone}">
+      <span class="availability-state-icon">${resourceReady && !hasConflict ? '✓' : '!'}</span>
+      <div class="availability-state-copy">
+        <strong>${escapeHtml(title)}</strong>
+        <small>${escapeHtml(detail)}</small>
+      </div>
+      <span class="availability-resource-status">${escapeHtml(resource.status || 'Unknown')}</span>
+    </div>
+    <div class="availability-check-meta">
+      <span><b>${escapeHtml(resource.name)}</b></span>
+      <span>${escapeHtml(date)}</span>
+      <span>${escapeHtml(start)}–${escapeHtml(end)}</span>
+      ${hasConflict ? '<span class="availability-warning-label">Review before submitting</span>' : '<span class="availability-ready-label">Ready to request</span>'}
+    </div>`;
+}
+
 async function loadProtectedData() {
   try {
     const userResponse = await apiFetch('/api/auth/me');
@@ -1030,28 +1223,56 @@ function addGlobalEventHandlers() {
   });
 
   const globalSearch = document.getElementById('globalSearch');
-  globalSearch?.addEventListener('input', (event) => {
-    const query = event.target.value.trim();
-    if (!query) return;
-    setSection('resources');
-    const resourceSearch = document.getElementById('resourceSearch');
-    if (resourceSearch) {
-      resourceSearch.value = query;
-      renderResources();
-    }
-  });
+  const globalSearchResults = document.getElementById('globalSearchResults');
+  const globalSearchClear = document.getElementById('globalSearchClear');
+
+  globalSearch?.addEventListener('focus', () => renderGlobalSearchResults(globalSearch.value));
+  globalSearch?.addEventListener('input', (event) => renderGlobalSearchResults(event.target.value));
+
   globalSearch?.addEventListener('keydown', (event) => {
+    const options = [...(globalSearchResults?.querySelectorAll('.search-result') || [])];
     if (event.key === 'Escape') {
-      event.target.value = '';
+      event.preventDefault();
+      closeGlobalSearch(true);
       event.target.blur();
+      return;
+    }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      if (!options.length) return;
+      event.preventDefault();
+      globalSearchActiveIndex = event.key === 'ArrowDown'
+        ? (globalSearchActiveIndex + 1) % options.length
+        : (globalSearchActiveIndex - 1 + options.length) % options.length;
+      options.forEach((option, index) => option.classList.toggle('active', index === globalSearchActiveIndex));
+      options[globalSearchActiveIndex]?.scrollIntoView({ block: 'nearest' });
       return;
     }
     if (event.key === 'Enter') {
       event.preventDefault();
-      setSection('resources');
-      document.getElementById('resourceSearch')?.focus();
+      const target = options[globalSearchActiveIndex] || options[0];
+      if (target) chooseGlobalSearchResult(target.dataset.searchSection, target.dataset.searchId);
     }
   });
+
+  globalSearchClear?.addEventListener('click', () => {
+    if (!globalSearch) return;
+    globalSearch.value = '';
+    globalSearch.focus();
+    renderGlobalSearchResults('');
+  });
+
+  globalSearchResults?.addEventListener('click', (event) => {
+    const target = event.target.closest('.search-result');
+    if (!target) return;
+    chooseGlobalSearchResult(target.dataset.searchSection, target.dataset.searchId);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (globalSearch?.closest('.global-search-wrap') && !globalSearch.closest('.global-search-wrap').contains(event.target)) {
+      closeGlobalSearch();
+    }
+  });
+
   document.addEventListener('keydown', (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
       event.preventDefault();
@@ -1089,6 +1310,11 @@ function addGlobalEventHandlers() {
 
   document.getElementById('cancelResourceForm').addEventListener('click', () => resourceForm.classList.add('hidden'));
   document.getElementById('resourceSearch').addEventListener('input', renderResources);
+
+  ['requestResource', 'requestDate', 'requestStart', 'requestEnd'].forEach((id) => {
+    document.getElementById(id)?.addEventListener('input', renderRequestAvailability);
+    document.getElementById(id)?.addEventListener('change', renderRequestAvailability);
+  });
   ['resourceCategoryFilter', 'resourceDepartmentFilter', 'resourceStatusFilter', 'resourceAvailabilityFilter'].forEach((id) => {
     document.getElementById(id).addEventListener('change', renderResources);
   });
