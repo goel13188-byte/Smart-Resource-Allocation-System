@@ -77,8 +77,27 @@ function normalizeAuthority(value) {
 }
 
 function iconMarkup(name, altText = '') {
-  const iconName = /^[a-z0-9_-]+$/i.test(name) ? name : 'info';
-  return `<img class="ui-icon" src="/icons/${iconName}.png" alt="${escapeHtml(altText)}" onerror="this.hidden=true">`;
+  const icons = {
+    dashboard: '<path d="M4 13h6V4H4v9Zm10 7h6V4h-6v16ZM4 20h6v-3H4v3Zm10-7h6v-3h-6v3Z"/>',
+    resource: '<path d="M4 5.5 12 2l8 3.5v13L12 22l-8-3.5v-13Zm8 1.8 5.5-2.4L12 2.5 6.5 4.9 12 7.3Zm-6 1.5v8.4l5 2.2V11L6 8.8Zm7 2.2v9.2l5-2.2V8.8l-5 2.2Z"/>',
+    request: '<path d="M5 3h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-6l-4 4v-4H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm3 5h8M8 12h5"/>',
+    allocation: '<path d="M5 4h5v5H5V4Zm9 11h5v5h-5v-5ZM14 6h2a3 3 0 0 1 3 3v6M10 6h2M7.5 9v6a3 3 0 0 0 3 3H14"/>',
+    conflict: '<path d="m12 3 9 16H3L12 3Zm0 5v5m0 3v1"/>',
+    user: '<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0"/>',
+    department: '<path d="M4 20V9l8-5 8 5v11H4Zm4 0v-6h8v6M8 9h.01M12 9h.01M16 9h.01"/>',
+    priority: '<path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/>',
+    strategic: '<path d="M4 19V5m0 14h16M7 16l4-5 3 2 5-7M7 16h.01M11 11h.01M14 13h.01M19 6h.01"/>',
+    reports: '<path d="M6 3h9l4 4v14H6V3Zm9 0v5h4M9 12h6M9 16h6M9 8h2"/>',
+    logout: '<path d="M10 5H5v14h5M14 8l4 4-4 4m4-4H9"/>',
+    add: '<path d="M12 5v14M5 12h14"/>',
+    filter: '<path d="M4 5h16l-6.5 7.5V18l-3 1v-6.5L4 5Z"/>',
+    view: '<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Zm9.5 2.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>',
+    edit: '<path d="m4 16-.8 4.8L8 20l11.2-11.2-4-4L4 16Zm10-8 4 4M12 20h8"/>',
+    delete: '<path d="M5 7h14m-9-4h4l1 4H9l1-4Zm-3 4 1 13h8l1-13M10 11v8m4-8v8"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8v.01"/>'
+  };
+  const svg = icons[name] || icons.info;
+  return `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${svg}</svg>`;
 }
 
 function showToast(message, type = 'info') {
@@ -469,6 +488,45 @@ function renderDashboard() {
         <div class="card-item"><strong>${conflict.conflict_type || 'Time overlap'}</strong><br /><small>${conflict.description || 'Conflict detected'}</small></div>
       `).join('')
     : '<p>No open conflicts.</p>';
+
+  const utilization = Math.min(100, Math.max(0, Number(state.summary.resource_utilization_percentage || 0)));
+  const total = Number(state.summary.total_resources || 0);
+  const available = Number(state.summary.available_resources || 0);
+  const allocated = Number(state.summary.allocated_resources || 0);
+  const maintenance = state.resources.filter((item) => String(item.status || '').toLowerCase() === 'maintenance').length;
+  const topResources = state.resources.slice(0, 4);
+  const insights = document.getElementById('dashboardInsights');
+  if (insights) {
+    insights.innerHTML = `
+      <div class="insight-card utilization-card">
+        <div class="insight-heading"><span class="insight-kicker">RESOURCE HEALTH</span><span class="insight-status"><i></i> Live</span></div>
+        <div class="health-layout">
+          <div class="health-ring" style="--progress:${utilization * 3.6}deg"><strong>${utilization}%</strong><span>utilized</span></div>
+          <div class="health-metrics">
+            <div><span>Available</span><b>${available}</b></div>
+            <div><span>Allocated</span><b>${allocated}</b></div>
+            <div><span>Maintenance</span><b>${maintenance}</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-heading"><span class="insight-kicker">RESOURCE PULSE</span><span class="insight-link">Live inventory</span></div>
+        <div class="pulse-list">
+          ${topResources.length ? topResources.map((resource) => {
+            const status = String(resource.status || 'Available');
+            const cls = status.toLowerCase().includes('maintenance') ? 'warning' : status.toLowerCase().includes('allocated') ? 'busy' : 'ready';
+            return `<div class="pulse-row"><span class="pulse-dot ${cls}"></span><div><strong>${escapeHtml(resource.name || 'Resource')}</strong><small>${escapeHtml(resource.location || resource.resource_type_name || 'Organizational resource')}</small></div><em>${escapeHtml(status)}</em></div>`;
+          }).join('') : '<div class="empty-state">No resource activity yet.</div>'}
+        </div>
+      </div>
+      <div class="insight-card decision-card">
+        <div class="insight-heading"><span class="insight-kicker">DECISION QUEUE</span><span class="queue-count">${Number(state.summary.pending_requests || 0)}</span></div>
+        <h4>${Number(state.summary.pending_requests || 0) ? 'Requests need your attention' : 'Everything is under control'}</h4>
+        <p>${Number(state.summary.pending_requests || 0) ? 'Review pending requests and resolve conflicts before they affect allocation.' : 'No pending requests are waiting for a decision right now.'}</p>
+        <button type="button" class="insight-action" data-quick-section="requests">Open request queue <span>→</span></button>
+      </div>
+    `;
+  }
 }
 
 function populateDepartmentOptions() {
