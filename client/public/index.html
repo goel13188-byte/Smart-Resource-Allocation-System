@@ -134,15 +134,36 @@
 
       <main class="main-content">
         <header class="topbar">
-          <div>
+          <div class="topbar-heading">
+            <span class="topbar-kicker">RESOURCE OPERATIONS</span>
             <h3 id="welcomeTitle">Dashboard</h3>
+            <p id="sectionSubtitle">Your resource command center.</p>
           </div>
-          <div class="topbar-info">
-            <span id="currentUserLabel">User</span>
+          <div class="topbar-tools">
+            <label class="global-search" aria-label="Global resource search">
+              <span class="global-search-icon" data-icon="search"></span>
+              <input id="globalSearch" type="search" placeholder="Search resources..." autocomplete="off" />
+              <kbd>⌘ K</kbd>
+            </label>
+            <span class="system-status"><i></i> System healthy</span>
+            <div class="topbar-info">
+              <span id="currentUserLabel">User</span>
+            </div>
           </div>
         </header>
 
         <section id="dashboard" class="panel-section active">
+          <div class="dashboard-context">
+            <div>
+              <span class="context-kicker">OPERATIONS OVERVIEW</span>
+              <h2 id="dashboardGreeting">Good to see you</h2>
+              <p>See what is available, what needs a decision, and where resources are being used.</p>
+            </div>
+            <div class="context-meta">
+              <span class="live-badge"><i></i> Live workspace</span>
+              <span id="dashboardDate"></span>
+            </div>
+          </div>
           <div class="dashboard-hero">
             <div class="hero-copy">
               <span class="eyebrow">COMMAND CENTER</span>
