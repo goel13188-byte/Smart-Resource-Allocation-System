@@ -122,6 +122,7 @@
           <button class="nav-item" data-section="resources" data-icon="resource">Resources</button>
           <button class="nav-item" data-section="requests" data-icon="request">Resource Requests</button>
           <button class="nav-item" data-section="allocations" data-icon="allocation">Allocations</button>
+          <button class="nav-item" data-section="maintenance" data-icon="maintenance">Maintenance</button>
           <button class="nav-item" data-section="calendar" data-icon="calendar">Calendar</button>
           <button class="nav-item" data-section="approvals" data-icon="approval">Approval Center</button>
           <button class="nav-item" data-section="conflicts" data-icon="conflict">Conflicts</button>
@@ -238,6 +239,13 @@
                 <option>Inactive</option>
               </select></label>
               <label>Responsible Person<input type="text" id="resourceResponsiblePerson" maxlength="150" /></label>
+              <label>Asset Tag<input type="text" id="resourceAssetTag" maxlength="100" placeholder="SRM-ASSET-001" /></label>
+              <label>Serial Number<input type="text" id="resourceSerialNumber" maxlength="150" /></label>
+              <label>Vendor<input type="text" id="resourceVendorName" maxlength="150" /></label>
+              <label>Purchase Date<input type="date" id="resourcePurchaseDate" /></label>
+              <label>Warranty Until<input type="date" id="resourceWarrantyUntil" /></label>
+              <label>Lifecycle Status<select id="resourceLifecycleStatus"><option>Active</option><option>In Use</option><option>Under Maintenance</option><option>Retired</option><option>Disposed</option></select></label>
+              <label>Next Maintenance<input type="datetime-local" id="resourceNextMaintenance" /></label>
               <label class="resource-description">Description<textarea id="resourceDescription" rows="3" maxlength="2000"></textarea></label>
             </div>
             <div class="button-row">
@@ -396,6 +404,31 @@
                 <div class="workflow-step"><span>3</span><div><strong>Allocate</strong><small>Approved demand becomes a scheduled allocation.</small></div></div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section id="maintenance" class="panel-section">
+          <div class="section-header">
+            <div><span class="context-kicker">ASSET CARE</span><h3>Maintenance & Asset Lifecycle</h3><p class="section-subtitle">Track repairs, preventive maintenance, ownership and the operational life of every resource.</p></div>
+            <button class="primary-btn" id="createMaintenanceBtn" type="button">Create Maintenance Ticket</button>
+          </div>
+          <div id="maintenanceSummaryStrip" class="operation-summary-strip"></div>
+          <form id="maintenanceForm" class="data-form hidden">
+            <div class="form-grid">
+              <label>Resource<select id="maintenanceResource" required></select></label>
+              <label>Ticket Type<select id="maintenanceType"><option>Preventive</option><option>Corrective</option><option>Inspection</option><option>Calibration</option><option>Emergency</option></select></label>
+              <label>Priority<select id="maintenancePriority"><option>Low</option><option selected>Medium</option><option>High</option><option>Critical</option></select></label>
+              <label>Title<input id="maintenanceTitle" maxlength="180" required placeholder="Quarterly inspection" /></label>
+              <label>Scheduled Date<input type="date" id="maintenanceScheduledDate" /></label>
+              <label>Estimated Cost<input type="number" id="maintenanceEstimatedCost" min="0" step="0.01" value="0" /></label>
+              <label class="resource-description">Description<textarea id="maintenanceDescription" rows="3" maxlength="3000"></textarea></label>
+            </div>
+            <div class="button-row"><button class="primary-btn" type="submit">Create Ticket</button><button class="secondary-btn" type="button" id="cancelMaintenanceForm">Cancel</button></div>
+          </form>
+          <div class="table-wrap">
+            <table><thead><tr><th>Resource</th><th>Ticket</th><th>Type</th><th>Priority</th><th>Status</th><th>Scheduled</th><th>Assigned To</th><th>Action</th></tr></thead>
+              <tbody id="maintenanceTableBody"></tbody>
+            </table>
           </div>
         </section>
 
