@@ -494,13 +494,16 @@ async function loadProtectedData() {
     state.organization = userResponse.data?.organization || null;
     renderProfile();
 
-    const [summaryRes, resourcesRes, requestsRes, conflictsRes, allocRes, approvalsRes, departmentsRes, membersRes, prioritiesRes, trendsRes, resourceAdditionsRes] = await Promise.all([
+    const [summaryRes, resourcesRes, requestsRes, conflictsRes, allocRes, approvalsRes, maintenanceRes, notificationsRes, auditRes, departmentsRes, membersRes, prioritiesRes, trendsRes, resourceAdditionsRes] = await Promise.all([
       apiFetch('/api/dashboard/summary'),
       apiFetch('/api/resources'),
       apiFetch('/api/requests'),
       apiFetch('/api/conflicts'),
       apiFetch('/api/allocations'),
       apiFetch('/api/approvals').catch(() => ({ data: [] })),
+      apiFetch('/api/maintenance').catch(() => ({ data: [] })),
+      apiFetch('/api/notifications').catch(() => ({ data: [], unread: 0 })),
+      apiFetch('/api/audit-logs').catch(() => ({ data: [] })),
       apiFetch('/api/departments'),
       apiFetch('/api/users'),
       apiFetch('/api/priorities'),
@@ -518,6 +521,10 @@ async function loadProtectedData() {
     state.conflicts = conflictsRes.data || [];
     state.allocations = allocRes.data || [];
     state.approvals = approvalsRes.data || [];
+    state.maintenance = maintenanceRes.data || [];
+    state.notifications = notificationsRes.data || [];
+    state.notificationUnread = Number(notificationsRes.unread || state.notifications.filter((item) => !item.is_read).length);
+    state.auditLogs = auditRes.data || [];
     state.departments = departmentsRes.data || [];
     state.members = membersRes.data || [];
     state.priorities = prioritiesRes.data || [];
