@@ -486,7 +486,7 @@ async function loadProtectedData() {
     state.organization = userResponse.data?.organization || null;
     renderProfile();
 
-    const [summaryRes, resourcesRes, requestsRes, conflictsRes, allocRes, departmentsRes, membersRes, prioritiesRes, trendsRes, resourceAdditionsRes] = await Promise.all([
+    const [summaryRes, resourcesRes, requestsRes, conflictsRes, allocRes, approvalsRes, departmentsRes, membersRes, prioritiesRes, trendsRes, resourceAdditionsRes] = await Promise.all([
       apiFetch('/api/dashboard/summary'),
       apiFetch('/api/resources'),
       apiFetch('/api/requests'),
