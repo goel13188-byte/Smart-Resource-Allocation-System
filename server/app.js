@@ -16,6 +16,8 @@ const approvalRoutes = require('./routes/approvalRoutes');
 const allocationRoutes = require('./routes/allocationRoutes');
 const utilizationRoutes = require('./routes/utilizationRoutes');
 const maintenanceRoutes = require('./routes/maintenanceRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const auditRoutes = require('./routes/auditRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const errorMiddleware = require('./middleware/errorMiddleware');
 
@@ -44,6 +46,8 @@ app.use('/api/approvals', approvalRoutes);
 app.use('/api/allocations', allocationRoutes);
 app.use('/api/utilization', utilizationRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/audit-logs', auditRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
 const staticDir = path.join(__dirname, '../client/public');

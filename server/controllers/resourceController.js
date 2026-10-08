@@ -1,5 +1,6 @@
 const { pool } = require('../config/db');
 const { saveResourceImage } = require('../services/resourceImageService');
+const { writeAudit } = require('../services/auditService');
 
 function sendError(res, error, fallback) {
 	if (error.code === 'ER_DUP_ENTRY') {
@@ -178,6 +179,14 @@ async function updateResource(req, res) {
 			 WHERE id = ? AND organization_id = ?`,
 			[...result.values, req.params.id, req.user.organization_id]
 		);
+		await writeAudit({
+			organizationId: req.user.organization_id,
+			userId: req.user.user_id,
+			action: 'Updated resource',
+			entityType: 'resource',
+			entityId: Number(req.params.id),
+			details: { code: result.values[1], name: result.values[2], lifecycle_status: result.values[17] },
+		});
 		return res.json({ success: true, message: 'Resource updated.' });
 	} catch (error) {
 		return sendError(res, error, 'Unable to update resource.');
@@ -192,6 +201,14 @@ async function deleteResource(req, res) {
 			['Inactive', req.params.id, req.user.organization_id]
 		);
 		if (!result.affectedRows) return res.status(404).json({ success: false, message: 'Resource not found.' });
+		await writeAudit({
+			organizationId: req.user.organization_id,
+			userId: req.user.user_id,
+			action: 'Deactivated resource',
+			entityType: 'resource',
+			entityId: Number(req.params.id),
+			details: { status: 'Inactive' },
+		});
 		return res.json({ success: true, message: 'Resource deactivated.' });
 	} catch (error) {
 		return sendError(res, error, 'Unable to deactivate resource.');

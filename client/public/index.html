@@ -123,6 +123,7 @@
           <button class="nav-item" data-section="requests" data-icon="request">Resource Requests</button>
           <button class="nav-item" data-section="allocations" data-icon="allocation">Allocations</button>
           <button class="nav-item" data-section="maintenance" data-icon="maintenance">Maintenance</button>
+          <button class="nav-item" data-section="audit" data-icon="audit">Activity & Audit</button>
           <button class="nav-item" data-section="calendar" data-icon="calendar">Calendar</button>
           <button class="nav-item" data-section="approvals" data-icon="approval">Approval Center</button>
           <button class="nav-item" data-section="conflicts" data-icon="conflict">Conflicts</button>
@@ -151,6 +152,11 @@
                 <kbd>Ctrl K</kbd>
               </label>
               <div id="globalSearchResults" class="global-search-results hidden" role="listbox" aria-label="Search results"></div>
+            </div>
+            <button class="notification-trigger" id="notificationTrigger" type="button" aria-label="Open notifications"><span data-icon="bell"></span><b id="notificationBadge" class="hidden">0</b></button>
+            <div class="notification-panel hidden" id="notificationPanel">
+              <div class="notification-panel-head"><div><strong>Notifications</strong><small id="notificationCountLabel">No new notifications</small></div><button type="button" class="text-button" id="markAllNotificationsRead">Mark all read</button></div>
+              <div id="notificationList" class="notification-list"></div>
             </div>
             <span class="system-status"><i></i> System healthy</span>
             <div class="topbar-info">
@@ -428,6 +434,18 @@
           <div class="table-wrap">
             <table><thead><tr><th>Resource</th><th>Ticket</th><th>Type</th><th>Priority</th><th>Status</th><th>Scheduled</th><th>Assigned To</th><th>Action</th></tr></thead>
               <tbody id="maintenanceTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="audit" class="panel-section">
+          <div class="section-header">
+            <div><span class="context-kicker">GOVERNANCE</span><h3>Activity & Audit Trail</h3><p class="section-subtitle">A traceable record of important resource, request, approval and maintenance decisions.</p></div>
+          </div>
+          <div id="auditSummaryStrip" class="operation-summary-strip"></div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Entity</th><th>Details</th></tr></thead>
+              <tbody id="auditTableBody"></tbody>
             </table>
           </div>
         </section>

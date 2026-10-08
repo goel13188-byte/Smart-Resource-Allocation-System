@@ -1,4 +1,6 @@
 const { pool } = require('../config/db');
+const { createNotification } = require('../services/notificationService');
+const { writeAudit } = require('../services/auditService');
 
 async function listApprovals(req, res) {
   try {
@@ -85,6 +87,27 @@ async function createApproval(req, res) {
       [finalStatus, body.request_id, req.user.organization_id]
     );
     await connection.commit();
+
+    await createNotification({
+      organizationId: req.user.organization_id,
+      userId: request.user_id,
+      title: decision === 'Approved' ? 'Resource request approved' : 'Resource request rejected',
+      message: decision === 'Approved'
+        ? `Your request #${request.id} was approved and allocated.`
+        : `Your request #${request.id} was rejected. ${String(body.reason || '').trim()}`,
+      type: decision === 'Approved' ? 'success' : 'error',
+      entityType: 'resource_request',
+      entityId: request.id,
+    });
+    await writeAudit({
+      organizationId: req.user.organization_id,
+      userId: req.user.user_id,
+      action: `Request ${decision.toLowerCase()}`,
+      entityType: 'approval',
+      entityId: result.insertId,
+      details: { request_id: request.id, decision, allocation_id: allocationId, reason: body.reason || '' },
+    });
+
     return res.status(201).json({ success: true, data: { id: result.insertId, decision, status: finalStatus, allocation_id: allocationId } });
   } catch (error) {
     await connection.rollback();

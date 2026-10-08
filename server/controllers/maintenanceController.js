@@ -1,4 +1,6 @@
 const { pool } = require('../config/db');
+const { createNotification, notifyOrganizationManagers } = require('../services/notificationService');
+const { writeAudit } = require('../services/auditService');
 
 const MANAGER_ROLES = ['manager', 'resource manager', 'administrator', 'admin', 'organization admin', 'super admin'];
 
@@ -57,6 +59,31 @@ async function createMaintenanceTicket(req, res) {
       );
     }
 
+    await createNotification({
+      organizationId: req.user.organization_id,
+      userId: req.user.user_id,
+      title: 'Maintenance ticket created',
+      message: `${resources[0].name}: ${String(body.title).trim()}`,
+      type: 'warning',
+      entityType: 'maintenance_ticket',
+      entityId: result.insertId,
+    });
+    await notifyOrganizationManagers({
+      organizationId: req.user.organization_id,
+      title: 'New maintenance ticket',
+      message: `${resources[0].name} needs ${body.ticket_type || 'maintenance'} attention.`,
+      type: 'warning',
+      entityType: 'maintenance_ticket',
+      entityId: result.insertId,
+    });
+    await writeAudit({
+      organizationId: req.user.organization_id,
+      userId: req.user.user_id,
+      action: 'Created maintenance ticket',
+      entityType: 'maintenance_ticket',
+      entityId: result.insertId,
+      details: { resource_id: body.resource_id, ticket_type: body.ticket_type || 'Preventive', priority: body.priority || 'Medium' },
+    });
     return res.status(201).json({ success: true, data: { id: result.insertId }, message: 'Maintenance ticket created.' });
   } catch (error) {
     console.error(error);
@@ -117,6 +144,23 @@ async function updateMaintenanceTicket(req, res) {
       );
     }
 
+    await createNotification({
+      organizationId: req.user.organization_id,
+      userId: existing[0].requester_id || req.user.user_id,
+      title: `Maintenance ticket ${status.toLowerCase()}`,
+      message: `${existing[0].title} is now ${status}.`,
+      type: status === 'Completed' ? 'success' : 'info',
+      entityType: 'maintenance_ticket',
+      entityId: Number(id),
+    });
+    await writeAudit({
+      organizationId: req.user.organization_id,
+      userId: req.user.user_id,
+      action: `Maintenance ticket marked ${status}`,
+      entityType: 'maintenance_ticket',
+      entityId: Number(id),
+      details: { resource_id: existing[0].resource_id, status },
+    });
     return res.json({ success: true, message: 'Maintenance ticket updated.' });
   } catch (error) {
     console.error(error);
