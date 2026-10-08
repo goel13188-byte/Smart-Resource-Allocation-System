@@ -595,6 +595,13 @@ async function handleResourceSubmit(event) {
     department_id: document.getElementById('resourceDepartment').value || null,
     responsible_person: document.getElementById('resourceResponsiblePerson').value.trim(),
     status: document.getElementById('resourceStatus').value,
+    asset_tag: document.getElementById('resourceAssetTag').value.trim(),
+    serial_number: document.getElementById('resourceSerialNumber').value.trim(),
+    vendor_name: document.getElementById('resourceVendorName').value.trim(),
+    purchase_date: document.getElementById('resourcePurchaseDate').value || null,
+    warranty_until: document.getElementById('resourceWarrantyUntil').value || null,
+    lifecycle_status: document.getElementById('resourceLifecycleStatus').value,
+    next_maintenance_at: document.getElementById('resourceNextMaintenance').value || null,
     image_name: document.getElementById('resourceImageName').value,
     image_data: state.resourceImageData,
   };
@@ -1107,6 +1114,13 @@ async function handleEditResource(id) {
     document.getElementById('resourceQuantity').value = resource.quantity || 1;
     document.getElementById('resourceDepartment').value = resource.department_id || '';
     document.getElementById('resourceResponsiblePerson').value = resource.responsible_person || '';
+    document.getElementById('resourceAssetTag').value = resource.asset_tag || '';
+    document.getElementById('resourceSerialNumber').value = resource.serial_number || '';
+    document.getElementById('resourceVendorName').value = resource.vendor_name || '';
+    document.getElementById('resourcePurchaseDate').value = String(resource.purchase_date || '').slice(0,10);
+    document.getElementById('resourceWarrantyUntil').value = String(resource.warranty_until || '').slice(0,10);
+    document.getElementById('resourceLifecycleStatus').value = resource.lifecycle_status || 'Active';
+    document.getElementById('resourceNextMaintenance').value = resource.next_maintenance_at ? String(resource.next_maintenance_at).replace(' ', 'T').slice(0,16) : '';
     document.getElementById('resourceStatus').value = resource.status || 'Available';
     const imageName = resource.image_name || '';
     const imagePath = imageName && !String(imageName).startsWith('/') ? `/images/${encodeURIComponent(imageName)}` : imageName;
@@ -1359,6 +1373,33 @@ function addGlobalEventHandlers() {
 
   document.getElementById('cancelRequestForm').addEventListener('click', () => requestForm.classList.add('hidden'));
 
+  document.getElementById('createMaintenanceBtn')?.addEventListener('click', () => {
+    setSection('maintenance');
+    document.getElementById('maintenanceForm').classList.remove('hidden');
+    populateSelect('maintenanceResource', state.resources.filter((r) => !['Inactive','Retired'].includes(r.status)).map((r) => ({ value: r.id, label: `${r.name} · ${r.code}` })));
+  });
+  document.getElementById('cancelMaintenanceForm')?.addEventListener('click', () => document.getElementById('maintenanceForm').classList.add('hidden'));
+  document.getElementById('maintenanceForm')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    try {
+      await apiFetch('/api/maintenance', { method: 'POST', body: JSON.stringify({
+        resource_id: Number(document.getElementById('maintenanceResource').value),
+        ticket_type: document.getElementById('maintenanceType').value,
+        priority: document.getElementById('maintenancePriority').value,
+        title: document.getElementById('maintenanceTitle').value.trim(),
+        scheduled_date: document.getElementById('maintenanceScheduledDate').value || null,
+        estimated_cost: Number(document.getElementById('maintenanceEstimatedCost').value) || 0,
+        description: document.getElementById('maintenanceDescription').value.trim(),
+      })});
+      event.target.reset();
+      event.target.classList.add('hidden');
+      await loadProtectedData();
+      showToast('Maintenance ticket created and resource lifecycle updated.', 'success');
+    } catch (error) {
+      showToast(error.message || 'Unable to create maintenance ticket.', 'error');
+    }
+  });
+
   document.body.addEventListener('click', (event) => {
     const target = event.target.closest('[data-action]');
     if (!target) return;
@@ -1371,8 +1412,21 @@ function addGlobalEventHandlers() {
     if (action === 'delete-resource') handleDeleteResource(id);
     if (action === 'decide-request') handleRequestDecision(id, decision);
     if (action === 'resolve-conflict') handleConflictDecision(id, status);
+    if (action === 'complete-maintenance') handleMaintenanceDecision(id, 'Completed');
+    if (action === 'progress-maintenance') handleMaintenanceDecision(id, 'In Progress');
     if (action === 'review-resource-addition') handleResourceAdditionReview(id, decision);
   });
+}
+
+async function handleMaintenanceDecision(id, status) {
+  if (!state.authority.canDecideRequests) return showToast('Only managers can update maintenance work.', 'error');
+  try {
+    await apiFetch(`/api/maintenance/${id}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    await loadProtectedData();
+    showToast(`Maintenance ticket marked ${status.toLowerCase()}.`, 'success');
+  } catch (error) {
+    showToast(error.message || 'Unable to update maintenance ticket.', 'error');
+  }
 }
 
 async function handleResourceAdditionReview(id, decision) {
