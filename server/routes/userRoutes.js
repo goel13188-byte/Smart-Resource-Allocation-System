@@ -7,8 +7,8 @@ const router = express.Router();
 
 router.use(protect);
 router.get('/', listUsers);
-router.get('/:id', getUserById);
 router.get('/:id/history', loadAuthority, requireDecisionAuthority, getUserHistory);
+router.get('/:id', getUserById);
 router.post('/', createUser);
 router.put('/:id', updateUser);
 router.delete('/:id', deleteUser);
