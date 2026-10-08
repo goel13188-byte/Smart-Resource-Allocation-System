@@ -38,7 +38,7 @@ const dropdownPost = document.getElementById('dropdownPost');
 const menuToggle = document.getElementById('menuToggle');
 const sidebarNav = document.getElementById('sidebarNav');
 
-const sectionButtons = document.querySelectorAll('.nav-item');
+const sectionButtons = document.querySelectorAll('.nav-item, .quick-action');
 const tabButtons = document.querySelectorAll('.tab-button');
 const authForms = document.querySelectorAll('.auth-form');
 
@@ -47,6 +47,13 @@ const registerForm = document.getElementById('registerForm');
 const resourceForm = document.getElementById('resourceForm');
 const requestForm = document.getElementById('requestForm');
 const resourceProposalForm = document.getElementById('resourceProposalForm');
+
+document.addEventListener('click', (event) => {
+  const quickButton = event.target.closest('[data-quick-section]');
+  if (!quickButton) return;
+  setSection(quickButton.dataset.quickSection);
+  sidebarNav.classList.add('hidden');
+});
 
 function setSection(sectionName) {
   document.querySelectorAll('.panel-section').forEach((section) => {
