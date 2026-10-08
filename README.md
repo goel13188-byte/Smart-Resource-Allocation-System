@@ -35,6 +35,12 @@ This system provides a centralized web application that helps organizations:
 - Priority management
 - Strategic trends and utilization insights
 - Reports
+- Resource Calendar
+- Approval Center
+- Maintenance and resource lifecycle tracking
+- Notifications and activity/audit trail
+- Conflict intelligence with risk scores, suggested actions, and alternatives
+- Member and department history / 360-degree intelligence
 - Resource image upload and bundled fallback images
 
 ## 👥 User Roles
@@ -99,22 +105,32 @@ Smart-Resource-Allocation-System/
 
 ## 🗄️ Database
 
-The deployed demonstration dataset contains:
-- **7 organizations**
-- **7 organization types**
-- **19 departments**
-- **16 users**
-- **17 resources**
-- **12 requests**
-- Related allocation, conflict, and workflow records
+The system uses MySQL with an organization-scoped demonstration dataset. The production demo was expanded with rich workflow data so the major screens are populated during demonstrations.
 
-The dataset importer is:
+The production demo expansion targets:
+- **12+ departments**
+- **16+ members**
+- **18+ resources**
+- **50+ resource requests**
+- **12 conflicts**
+- **14+ allocations**
+- **12 maintenance tickets**
+- **40 audit events**
+- **18 notifications**
+
+The idempotent demo expansion script is:
+
+```powershell
+npm.cmd run seed:expansion
+```
+
+The full dataset setup command is:
 
 ```powershell
 npm.cmd run seed:dataset
 ```
 
-> Use the dataset importer only with a fresh empty database. Do not repeatedly seed an already populated production database.
+> **Important:** `seed:dataset` is intended for a fresh database. Do not repeatedly run the full dataset import against an existing production database. The `seed:expansion` script is designed to be idempotent for the demo organization.
 
 ## 🔐 Demo Login
 
@@ -195,6 +211,26 @@ Tests cover resource validation, resource-management permissions, and dataset re
 8. Priorities
 9. Strategic Trends
 10. Reports
+11. Resource Calendar
+12. Approval Center
+13. Maintenance
+14. Activity & Audit
+15. Notifications
+
+### Conflict Intelligence
+
+The conflict module goes beyond showing a basic conflict flag. Managers can review:
+- Risk scores
+- Conflict severity and status
+- Suggested resolution actions
+- Alternative resources
+- Reassignment/resolution actions
+
+### Entity History
+
+Decision-authority users can open deeper history for:
+- **Members:** requests, allocations, conflicts, maintenance activity, and audit events
+- **Departments:** members, resources, requests, allocations, conflicts, and maintenance activity
 
 ## 🚀 Deployment
 
@@ -235,6 +271,8 @@ The production database is not publicly exposed. The backend uses Railway's priv
 
 ## 📌 Project Status
 
-**Production demo deployed and tested successfully.**
+**Production demo deployed on Railway with an expanded demonstration dataset.**
 
-The deployed application, backend API, MySQL database, authentication flow, resource management, request workflow, allocation system, conflict detection, and reporting modules have been tested.
+The current production build includes the full-stack application, MySQL integration, authentication and role-based access, resource/request workflows, allocations, conflict intelligence, calendar and approval workflows, maintenance tracking, notifications, audit history, member/department intelligence, and reporting.
+
+The `main` branch is protected with a GitHub ruleset requiring pull requests and one approval before merging, while blocking force pushes and branch deletion.
