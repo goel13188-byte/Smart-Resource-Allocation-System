@@ -3554,3 +3554,9 @@ body {
   .approval-item { grid-template-columns:32px minmax(0,1fr); }
   .approval-actions { grid-column:2; }
 }
+
+
+/* ---------- Maintenance + asset lifecycle ---------- */
+#maintenance .section-header { align-items:flex-end; }
+#maintenanceForm { margin-top:14px; }
+.maintenance-status-note { color:#8994a7; font-size:.58rem; }
