@@ -8,7 +8,8 @@
     "start": "node server/server.js",
     "test": "node --test",
     "seed:demo": "node server/scripts/seedDemoData.js",
-    "seed:dataset": "node server/scripts/seedDataset.js"
+    "seed:dataset": "node server/scripts/seedDataset.js",
+    "seed:expansion": "node server/scripts/seedDemoExpansion.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
