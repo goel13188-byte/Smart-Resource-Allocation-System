@@ -23,6 +23,8 @@ async function listResources(req, res) {
 		const [rows] = await pool.query(
 			`SELECT r.id, r.code, r.name, r.description, r.status, r.quantity, r.capacity,
 							r.location, r.department_id, r.responsible_person,
+                            r.asset_tag, r.serial_number, r.vendor_name, r.purchase_date, r.warranty_until,
+                            r.lifecycle_status, r.last_maintenance_at, r.next_maintenance_at,
 							CASE WHEN r.image_name IS NULL OR r.image_name = '' THEN ''
 									 WHEN LEFT(r.image_name, 1) = '/' THEN r.image_name
 									 ELSE CONCAT('/images/', r.image_name) END AS image_name,
@@ -95,6 +97,10 @@ async function buildResourceValues(body, existing, organizationId) {
 		? await saveResourceImage(body.image_data)
 		: value('image_name', existing?.image_name || '');
 
+	const lifecycleStatus = String(value('lifecycle_status', existing?.lifecycle_status || 'Active')).trim() || 'Active';
+	const allowedLifecycle = ['Active', 'In Use', 'Under Maintenance', 'Retired', 'Disposed'];
+	if (!allowedLifecycle.includes(lifecycleStatus)) return { error: 'Choose a valid lifecycle status.' };
+
 	return {
 		values: [
 			resourceTypeId,
@@ -109,6 +115,14 @@ async function buildResourceValues(body, existing, organizationId) {
 			value('responsible_person') || null,
 			value('status', 'Available'),
 			imageName,
+			value('asset_tag') || null,
+			value('serial_number') || null,
+			value('vendor_name') || null,
+			value('purchase_date') || null,
+			value('warranty_until') || null,
+			lifecycleStatus,
+			value('last_maintenance_at') || null,
+			value('next_maintenance_at') || null,
 		],
 	};
 }
@@ -125,8 +139,10 @@ async function createResource(req, res) {
 		const [insert] = await pool.query(
 			`INSERT INTO resources
 			 (organization_id, resource_type_id, code, name, description, location, capacity, quantity,
-				max_allotted_minutes, department_id, responsible_person, status, image_name)
-			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+				max_allotted_minutes, department_id, responsible_person, status, image_name,
+				asset_tag, serial_number, vendor_name, purchase_date, warranty_until, lifecycle_status,
+				last_maintenance_at, next_maintenance_at)
+			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			[req.user.organization_id, ...result.values]
 		);
 		return res.status(201).json({ success: true, data: { id: insert.insertId } });
@@ -156,7 +172,9 @@ async function updateResource(req, res) {
 			`UPDATE resources
 			 SET resource_type_id = ?, code = ?, name = ?, description = ?, location = ?, capacity = ?,
 					 quantity = ?, max_allotted_minutes = ?, department_id = ?, responsible_person = ?,
-					 status = ?, image_name = ?
+					 status = ?, image_name = ?, asset_tag = ?, serial_number = ?, vendor_name = ?,
+					 purchase_date = ?, warranty_until = ?, lifecycle_status = ?, last_maintenance_at = ?,
+					 next_maintenance_at = ?
 			 WHERE id = ? AND organization_id = ?`,
 			[...result.values, req.params.id, req.user.organization_id]
 		);
