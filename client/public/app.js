@@ -117,6 +117,7 @@ function iconMarkup(name, altText = '') {
     reports: '<path d="M6 3h9l4 4v14H6V3Zm9 0v5h4M9 12h6M9 16h6M9 8h2"/>',
     approval: '<path d="M5 4h14v16H5V4Zm4 5 2 2 4-4M9 15h6"/>',
     maintenance: '<path d="M14.7 6.3a4.5 4.5 0 0 0-5.9 5.9L3 18l3 3 5.8-5.8a4.5 4.5 0 0 0 5.9-5.9l-2.4 2.4-2.2-2.2 2.4-2.4Z"/>',
+    audit: '<path d="M5 4h14v16H5V4Zm3 4h8M8 12h8M8 16h5"/>',
     logout: '<path d="M10 5H5v14h5M14 8l4 4-4 4m4-4H9"/>',
     add: '<path d="M12 5v14M5 12h14"/>',
     filter: '<path d="M4 5h16l-6.5 7.5V18l-3 1v-6.5L4 5Z"/>',
