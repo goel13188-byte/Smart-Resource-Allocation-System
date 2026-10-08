@@ -13,6 +13,9 @@ const state = {
   allocations: [],
   approvals: [],
   maintenance: [],
+  notifications: [],
+  auditLogs: [],
+  notificationUnread: 0,
   departments: [],
   members: [],
   priorities: [],
@@ -72,6 +75,7 @@ function setSection(sectionName) {
     requests: ['Resource Requests', 'Review demand and move requests toward a decision.'],
     allocations: ['Allocations', 'See how approved resources are being scheduled.'],
     maintenance: ['Maintenance & Asset Lifecycle', 'Keep resources healthy, traceable, and operational.'],
+    audit: ['Activity & Audit Trail', 'Trace important operational decisions and resource changes.'],
     calendar: ['Resource Calendar', 'Plan bookings, spot demand, and see committed capacity.'],
     approvals: ['Approval Center', 'Review requests, conflicts, and decisions in one place.'],
     conflicts: ['Conflicts', 'Resolve competing demands before they block operations.'],
@@ -529,6 +533,8 @@ async function loadProtectedData() {
     renderCalendar();
     renderApprovals();
     renderMaintenance();
+    renderNotifications();
+    renderAuditLogs();
     renderConflicts();
     renderMembers();
     renderDepartments();
@@ -1206,6 +1212,49 @@ function renderMaintenance() {
   }).join('') || '<tr><td colspan="8">No maintenance tickets yet.</td></tr>';
 }
 
+function renderNotifications() {
+  const badge = document.getElementById('notificationBadge');
+  const countLabel = document.getElementById('notificationCountLabel');
+  if (badge) {
+    badge.textContent = state.notificationUnread > 99 ? '99+' : String(state.notificationUnread);
+    badge.classList.toggle('hidden', state.notificationUnread === 0);
+  }
+  if (countLabel) countLabel.textContent = state.notificationUnread ? `${state.notificationUnread} unread notification${state.notificationUnread === 1 ? '' : 's'}` : 'No new notifications';
+
+  const list = document.getElementById('notificationList');
+  if (!list) return;
+  list.innerHTML = state.notifications.length ? state.notifications.slice(0, 30).map((item) => `
+    <button type="button" class="notification-item ${item.is_read ? '' : 'unread'}" data-notification-id="${item.id}">
+      <span class="notification-icon ${escapeHtml(item.type || 'info')}">${item.type === 'success' ? '✓' : item.type === 'warning' ? '!' : item.type === 'error' ? '×' : '•'}</span>
+      <span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.message)}</small><em>${escapeHtml(new Date(item.created_at).toLocaleString())}</em></span>
+    </button>`).join('') : '<div class="notification-empty">You are all caught up.</div>';
+}
+
+function renderAuditLogs() {
+  const strip = document.getElementById('auditSummaryStrip');
+  if (strip) {
+    const today = new Date().toDateString();
+    const todayCount = state.auditLogs.filter((item) => new Date(item.created_at).toDateString() === today).length;
+    const actors = new Set(state.auditLogs.map((item) => item.user_name).filter(Boolean)).size;
+    strip.innerHTML = [
+      ['RECORDED EVENTS', state.auditLogs.length, 'Latest 250 events', 'violet'],
+      ['TODAY', todayCount, 'Operational events today', 'cyan'],
+      ['ACTORS', actors, 'Members generating activity', 'green'],
+      ['GOVERNANCE', state.auditLogs.filter((item) => ['approval','resource_request'].includes(item.entity_type)).length, 'Request and approval events', 'amber'],
+    ].map(([label,value,note,tone]) => `<div class="operation-summary-card ${tone}"><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  }
+  const body = document.getElementById('auditTableBody');
+  if (!body) return;
+  body.innerHTML = state.auditLogs.map((item) => `
+    <tr>
+      <td>${escapeHtml(new Date(item.created_at).toLocaleString())}</td>
+      <td><strong>${escapeHtml(item.user_name || 'System')}</strong><br><small>${escapeHtml(item.member_code || '')}</small></td>
+      <td>${escapeHtml(item.action || 'Activity')}</td>
+      <td>${escapeHtml(item.entity_type || '—')}${item.entity_id ? ` #${Number(item.entity_id)}` : ''}</td>
+      <td><code class="audit-details">${escapeHtml(item.details || '')}</code></td>
+    </tr>`).join('') || '<tr><td colspan="5">No audit activity recorded yet.</td></tr>';
+}
+
 function renderConflicts() {
   const conflictSummary = document.getElementById('conflictSummaryStrip');
   if (conflictSummary) {
@@ -1426,6 +1475,11 @@ function addGlobalEventHandlers() {
   });
 
   document.addEventListener('click', (event) => {
+    const notificationPanel = document.getElementById('notificationPanel');
+    const notificationTrigger = document.getElementById('notificationTrigger');
+    if (notificationPanel && notificationTrigger && !notificationPanel.contains(event.target) && !notificationTrigger.contains(event.target)) {
+      notificationPanel.classList.add('hidden');
+    }
     if (sidebarNav && menuToggle && !sidebarNav.contains(event.target) && !menuToggle.contains(event.target)) {
       closeNavigation();
     }
@@ -1507,6 +1561,38 @@ function addGlobalEventHandlers() {
 
   tabButtons.forEach((button) => {
     button.addEventListener('click', () => selectAuthTab(button.dataset.target));
+  });
+
+  document.getElementById('notificationTrigger')?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    document.getElementById('notificationPanel')?.classList.toggle('hidden');
+  });
+  document.getElementById('markAllNotificationsRead')?.addEventListener('click', async () => {
+    try {
+      await apiFetch('/api/notifications/read-all', { method: 'PATCH' });
+      state.notifications = state.notifications.map((item) => ({ ...item, is_read: 1 }));
+      state.notificationUnread = 0;
+      renderNotifications();
+      showToast('All notifications marked as read.', 'success');
+    } catch (error) {
+      showToast(error.message || 'Unable to update notifications.', 'error');
+    }
+  });
+  document.getElementById('notificationList')?.addEventListener('click', async (event) => {
+    const item = event.target.closest('[data-notification-id]');
+    if (!item) return;
+    const id = Number(item.dataset.notificationId);
+    try {
+      await apiFetch(`/api/notifications/${id}/read`, { method: 'PATCH' });
+      const notification = state.notifications.find((entry) => Number(entry.id) === id);
+      if (notification && !notification.is_read) {
+        notification.is_read = 1;
+        state.notificationUnread = Math.max(0, state.notificationUnread - 1);
+      }
+      renderNotifications();
+    } catch (error) {
+      showToast(error.message || 'Unable to mark notification as read.', 'error');
+    }
   });
 
   document.getElementById('logoutButton').addEventListener('click', () => {
