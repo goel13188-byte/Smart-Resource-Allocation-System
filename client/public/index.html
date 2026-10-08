@@ -122,6 +122,8 @@
           <button class="nav-item" data-section="resources" data-icon="resource">Resources</button>
           <button class="nav-item" data-section="requests" data-icon="request">Resource Requests</button>
           <button class="nav-item" data-section="allocations" data-icon="allocation">Allocations</button>
+          <button class="nav-item" data-section="calendar" data-icon="calendar">Calendar</button>
+          <button class="nav-item" data-section="approvals" data-icon="approval">Approval Center</button>
           <button class="nav-item" data-section="conflicts" data-icon="conflict">Conflicts</button>
           <button class="nav-item" data-section="members" data-icon="user">Members</button>
           <button class="nav-item" data-section="departments" data-icon="department">Departments</button>
@@ -343,6 +345,57 @@
               <thead><tr><th>Resource</th><th>Date</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
               <tbody id="allocationsTableBody"></tbody>
             </table>
+          </div>
+        </section>
+        <section id="calendar" class="panel-section">
+          <div class="section-header calendar-header">
+            <div>
+              <span class="context-kicker">SCHEDULING</span>
+              <h3>Resource Calendar</h3>
+              <p class="section-subtitle">See approved allocations and pending demand in one scheduling view.</p>
+            </div>
+            <div class="calendar-toolbar">
+              <button class="secondary-btn" id="calendarPrev" type="button" aria-label="Previous week">←</button>
+              <button class="secondary-btn" id="calendarToday" type="button">Today</button>
+              <button class="secondary-btn" id="calendarNext" type="button" aria-label="Next week">→</button>
+            </div>
+          </div>
+          <div class="calendar-context">
+            <div><strong id="calendarRangeLabel">This week</strong><span id="calendarRangeHint">Your operational schedule</span></div>
+            <button class="primary-btn" id="calendarCreateRequest" type="button"><span class="button-icon" data-icon="add"></span>Book a resource</button>
+          </div>
+          <div id="calendarLegend" class="calendar-legend">
+            <span><i class="legend-dot allocated"></i>Allocated</span>
+            <span><i class="legend-dot pending"></i>Pending</span>
+            <span><i class="legend-dot conflict"></i>Conflict</span>
+          </div>
+          <div id="resourceCalendar" class="resource-calendar" aria-label="Weekly resource calendar"></div>
+        </section>
+
+        <section id="approvals" class="panel-section">
+          <div class="section-header">
+            <div>
+              <span class="context-kicker">DECISION CENTER</span>
+              <h3>Approval Center</h3>
+              <p class="section-subtitle">Move requests from demand to approved allocation with a clear decision trail.</p>
+            </div>
+          </div>
+          <div id="approvalSummaryStrip" class="operation-summary-strip"></div>
+          <div class="approval-layout">
+            <div class="approval-queue card">
+              <div class="card-heading"><div><h4>Decision queue</h4><small>Requests requiring manager attention</small></div><span class="queue-live">LIVE</span></div>
+              <div id="approvalQueue"></div>
+            </div>
+            <div class="approval-timeline card">
+              <div class="card-heading"><div><h4>Workflow</h4><small>Every approval becomes an auditable decision</small></div></div>
+              <div class="workflow-steps">
+                <div class="workflow-step active"><span>1</span><div><strong>Request</strong><small>Employee submits a resource need.</small></div></div>
+                <div class="workflow-line"></div>
+                <div class="workflow-step"><span>2</span><div><strong>Review</strong><small>Manager checks priority, timing and conflicts.</small></div></div>
+                <div class="workflow-line"></div>
+                <div class="workflow-step"><span>3</span><div><strong>Allocate</strong><small>Approved demand becomes a scheduled allocation.</small></div></div>
+              </div>
+            </div>
           </div>
         </section>
 
