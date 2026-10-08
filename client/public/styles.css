@@ -1448,3 +1448,509 @@ tbody tr:hover {
   background: linear-gradient(135deg,#6366f1,#7c3aed);
   box-shadow: 0 10px 24px rgba(79,70,229,.25);
 }
+
+
+/* =========================================================
+   VISUAL POLISH V2 — distinctive product language
+   ========================================================= */
+
+:root {
+  --ink: #0b1220;
+  --ink-soft: #18243a;
+  --violet: #6657f6;
+  --cyan: #21c7c4;
+  --mint: #65e6c7;
+  --surface: rgba(255,255,255,.86);
+  --line: rgba(148,163,184,.20);
+}
+
+body {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(102,87,246,.11), transparent 26%),
+    radial-gradient(circle at 92% 12%, rgba(33,199,196,.10), transparent 23%),
+    linear-gradient(135deg,#f7f9ff 0%,#eef4fb 48%,#f7fbfb 100%);
+}
+
+/* Remove the broken-image square problem completely. */
+.ui-icon {
+  width: 19px;
+  height: 19px;
+  display: inline-block;
+  flex: 0 0 19px;
+  color: currentColor;
+  overflow: visible;
+  vertical-align: middle;
+}
+
+.nav-item .ui-icon {
+  color: #b9c7e2;
+  filter: none;
+}
+
+.nav-item.active .ui-icon {
+  color: #ffffff;
+}
+
+.nav-item:hover .ui-icon {
+  color: #e9edff;
+}
+
+.button-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 7px;
+}
+
+.action-btn .ui-icon {
+  width: 15px;
+  height: 15px;
+  flex-basis: 15px;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 38px;
+  border-radius: 11px;
+  border: 1px solid #e6eaf3;
+  background: #f7f9fd;
+  color: #25324a;
+  font-weight: 750;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  border-color: #cfd6ea;
+  box-shadow: 0 8px 18px rgba(20,31,60,.08);
+}
+
+/* Navigation now reads like a product, not a list of links. */
+.sidebar-nav {
+  padding: 12px;
+  background:
+    linear-gradient(180deg, rgba(11,18,35,.98), rgba(8,15,29,.98));
+  border: 1px solid rgba(148,163,184,.13);
+  border-radius: 18px;
+  box-shadow: 0 25px 55px rgba(2,6,23,.30);
+}
+
+.nav-item {
+  min-height: 46px;
+  gap: 12px;
+  margin-bottom: 5px;
+  color: #aebbd2;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+
+.nav-item::after {
+  content: "›";
+  margin-left: auto;
+  color: transparent;
+  font-size: 1.15rem;
+  transform: translateX(-3px);
+  transition: color .18s ease, transform .18s ease;
+}
+
+.nav-item:hover::after,
+.nav-item.active::after {
+  color: rgba(255,255,255,.45);
+  transform: translateX(0);
+}
+
+.nav-item.active {
+  background: linear-gradient(100deg, rgba(102,87,246,.30), rgba(33,199,196,.09));
+  border-color: rgba(126,140,255,.35);
+  box-shadow:
+    inset 3px 0 0 #7c73ff,
+    0 8px 25px rgba(0,0,0,.12);
+}
+
+.nav-item.danger {
+  border-top: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
+  padding-top: 14px;
+  margin-top: 14px;
+  color: #ff9eaf;
+}
+
+/* Header gets a compact command-bar feeling. */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  padding: 8px 0 18px;
+  background: linear-gradient(180deg, rgba(247,249,255,.94), rgba(247,249,255,.72), transparent);
+  backdrop-filter: blur(12px);
+}
+
+.topbar h3 {
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  font-weight: 850;
+  letter-spacing: -.055em;
+  color: #0d1629;
+}
+
+/* More expressive KPI cards */
+.stat-card {
+  min-height: 142px;
+  padding: 20px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(102,87,246,.09), transparent 38%),
+    rgba(255,255,255,.88);
+  border: 1px solid rgba(148,163,184,.18);
+  box-shadow: 0 15px 35px rgba(28,43,77,.065);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 42px rgba(28,43,77,.11);
+}
+
+.stat-card::before {
+  height: 3px;
+  background: linear-gradient(90deg,#6657f6,#21c7c4);
+}
+
+.stat-card .label {
+  color: #71809a;
+  font-weight: 700;
+}
+
+.stat-card .value {
+  font-size: clamp(2rem, 3vw, 2.65rem);
+  letter-spacing: -.06em;
+}
+
+/* Dashboard lower intelligence layer */
+.dashboard-insights {
+  display: grid;
+  grid-template-columns: 1.05fr 1.35fr .95fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.insight-card {
+  min-height: 235px;
+  padding: 21px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.88);
+  border: 1px solid rgba(148,163,184,.18);
+  box-shadow: 0 15px 35px rgba(28,43,77,.06);
+  overflow: hidden;
+}
+
+.insight-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.insight-kicker {
+  color: #75839b;
+  font-size: .68rem;
+  font-weight: 850;
+  letter-spacing: .15em;
+}
+
+.insight-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #15936f;
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.insight-status i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #24c991;
+  box-shadow: 0 0 0 5px rgba(36,201,145,.10);
+}
+
+.insight-link {
+  color: #5d61e8;
+  font-size: .72rem;
+  font-weight: 750;
+}
+
+.health-layout {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.health-ring {
+  --progress: 180deg;
+  width: 125px;
+  height: 125px;
+  flex: 0 0 125px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  position: relative;
+  background: conic-gradient(#6657f6 0 var(--progress), #e9edf6 var(--progress) 360deg);
+}
+
+.health-ring::after {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border-radius: 50%;
+  background: white;
+}
+
+.health-ring strong,
+.health-ring span {
+  position: relative;
+  z-index: 1;
+}
+
+.health-ring strong {
+  font-size: 1.65rem;
+  letter-spacing: -.06em;
+}
+
+.health-ring span {
+  color: #7b879a;
+  font-size: .67rem;
+  font-weight: 750;
+}
+
+.health-metrics {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+}
+
+.health-metrics div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.health-metrics span {
+  color: #7b879a;
+  font-size: .76rem;
+}
+
+.health-metrics b {
+  color: #172137;
+  font-size: 1rem;
+}
+
+.pulse-list {
+  display: grid;
+  gap: 5px;
+}
+
+.pulse-row {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 43px;
+  padding: 5px 7px;
+  border-radius: 11px;
+}
+
+.pulse-row:hover {
+  background: #f5f7fb;
+}
+
+.pulse-row > div {
+  min-width: 0;
+}
+
+.pulse-row strong,
+.pulse-row small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pulse-row strong {
+  color: #253149;
+  font-size: .79rem;
+}
+
+.pulse-row small {
+  margin-top: 2px;
+  color: #8a95a8;
+  font-size: .67rem;
+}
+
+.pulse-row em {
+  color: #77849a;
+  font-size: .65rem;
+  font-style: normal;
+  font-weight: 750;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.pulse-dot.ready { background: #22c993; box-shadow: 0 0 0 4px rgba(34,201,147,.10); }
+.pulse-dot.busy { background: #6677f4; box-shadow: 0 0 0 4px rgba(102,119,244,.10); }
+.pulse-dot.warning { background: #f3ad38; box-shadow: 0 0 0 4px rgba(243,173,56,.10); }
+
+.decision-card {
+  color: white;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(33,199,196,.22), transparent 38%),
+    linear-gradient(145deg,#18224a,#101b35);
+  border-color: rgba(255,255,255,.07);
+}
+
+.decision-card .insight-kicker {
+  color: #9faef4;
+}
+
+.queue-count {
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 31px;
+  border-radius: 10px;
+  color: white;
+  background: rgba(255,255,255,.10);
+  font-weight: 850;
+}
+
+.decision-card h4 {
+  margin: 18px 0 9px;
+  font-size: 1.12rem;
+  letter-spacing: -.025em;
+}
+
+.decision-card p {
+  color: #aebbd1;
+  font-size: .78rem;
+  line-height: 1.6;
+  min-height: 52px;
+}
+
+.insight-action {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 13px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 11px;
+  background: rgba(255,255,255,.07);
+  color: white;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.insight-action:hover {
+  background: rgba(255,255,255,.12);
+}
+
+/* Tables: cleaner hierarchy and less "database screen". */
+.table-wrap {
+  border-radius: 22px;
+  border-color: rgba(148,163,184,.18);
+  box-shadow: 0 15px 35px rgba(28,43,77,.055);
+}
+
+th {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background: #f8faff;
+  color: #71809a;
+  font-size: .69rem;
+}
+
+td {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom-color: #edf0f5;
+}
+
+tbody tr {
+  transition: background .16s ease, transform .16s ease;
+}
+
+tbody tr:hover {
+  background: linear-gradient(90deg, rgba(102,87,246,.035), rgba(33,199,196,.025));
+}
+
+/* Resource filter panel */
+.resource-filters {
+  padding: 18px;
+  margin: 20px 0 10px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.72);
+  border-color: rgba(148,163,184,.18);
+  box-shadow: 0 12px 28px rgba(28,43,77,.045);
+}
+
+.resource-filters label {
+  color: #63718a;
+  font-size: .72rem;
+  font-weight: 750;
+}
+
+.resource-filters input,
+.resource-filters select {
+  margin-top: 7px;
+  border-radius: 12px;
+  border-color: #e2e7f0;
+  background: white;
+}
+
+/* Section headers */
+.section-header h3 {
+  font-size: 1.65rem;
+  font-weight: 850;
+  letter-spacing: -.045em;
+}
+
+.section-subtitle {
+  color: #7a879c;
+}
+
+/* Responsive intelligence cards */
+@media (max-width: 1150px) {
+  .dashboard-insights {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .decision-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-insights {
+    grid-template-columns: 1fr;
+  }
+
+  .decision-card {
+    grid-column: auto;
+  }
+
+  .health-layout {
+    justify-content: center;
+  }
+}
