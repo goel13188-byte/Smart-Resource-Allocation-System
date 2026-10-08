@@ -64,7 +64,25 @@ function setSection(sectionName) {
     button.classList.toggle('active', button.dataset.section === sectionName);
   });
 
-  welcomeTitle.textContent = sectionName.charAt(0).toUpperCase() + sectionName.slice(1);
+  const sectionMeta = {
+    dashboard: ['Dashboard', 'Your resource command center.'],
+    resources: ['Resources', 'Discover, monitor, and manage organizational capacity.'],
+    requests: ['Resource Requests', 'Review demand and move requests toward a decision.'],
+    allocations: ['Allocations', 'See how approved resources are being scheduled.'],
+    conflicts: ['Conflicts', 'Resolve competing demands before they block operations.'],
+    members: ['Members', 'Understand who is requesting and managing resources.'],
+    departments: ['Departments', 'View the organizational structure behind allocation.'],
+    priorities: ['Priorities', 'Keep resource decisions aligned with organizational priorities.'],
+    trends: ['Strategic Trends', 'Turn resource activity into operational insight.'],
+    reports: ['Reports', 'A concise view of utilization, demand, and risk.'],
+  };
+  const [title, subtitle] = sectionMeta[sectionName] || [sectionName, 'Manage your resource operations.'];
+  welcomeTitle.textContent = title;
+  const subtitleNode = document.getElementById('sectionSubtitle');
+  if (subtitleNode) subtitleNode.textContent = subtitle;
+
+  const globalSearch = document.getElementById('globalSearch');
+  if (globalSearch && sectionName !== 'resources' && globalSearch.value) globalSearch.value = '';
 }
 
 function setAuthView(isLoggedIn) {
@@ -94,7 +112,12 @@ function iconMarkup(name, altText = '') {
     view: '<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Zm9.5 2.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>',
     edit: '<path d="m4 16-.8 4.8L8 20l11.2-11.2-4-4L4 16Zm10-8 4 4M12 20h8"/>',
     delete: '<path d="M5 7h14m-9-4h4l1 4H9l1-4Zm-3 4 1 13h8l1-13M10 11v8m4-8v8"/>',
-    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8v.01"/>'
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8v.01"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5"/>',
+    bell: '<path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>',
+    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+    spark: '<path d="m12 2 1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2Z"/>'
+
   };
   const svg = icons[name] || icons.info;
   return `<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${svg}</svg>`;
@@ -933,6 +956,36 @@ function addGlobalEventHandlers() {
     }
   });
 
+  const globalSearch = document.getElementById('globalSearch');
+  globalSearch?.addEventListener('input', (event) => {
+    const query = event.target.value.trim();
+    if (!query) return;
+    setSection('resources');
+    const resourceSearch = document.getElementById('resourceSearch');
+    if (resourceSearch) {
+      resourceSearch.value = query;
+      renderResources();
+    }
+  });
+  globalSearch?.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      event.target.value = '';
+      event.target.blur();
+      return;
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      setSection('resources');
+      document.getElementById('resourceSearch')?.focus();
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      globalSearch?.focus();
+    }
+  });
+
   tabButtons.forEach((button) => {
     button.addEventListener('click', () => selectAuthTab(button.dataset.target));
   });
@@ -1047,6 +1100,8 @@ function closeNavigation() {
 }
 
 async function bootstrap() {
+  const dateNode = document.getElementById('dashboardDate');
+  if (dateNode) dateNode.textContent = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' }).format(new Date());
   setAuthView(Boolean(state.token));
   addGlobalEventHandlers();
   await loadOrganizationTypes();
