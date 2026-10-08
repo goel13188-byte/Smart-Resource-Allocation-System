@@ -7,7 +7,7 @@ async function listRequests(req, res) {
   try {
     const [rows] = await pool.query(
       `
-        SELECT rr.id AS id, rr.project_name, rr.requested_date, rr.status,
+        SELECT rr.id AS id, rr.resource_id, rr.project_name, rr.requested_date, rr.start_time, rr.end_time, rr.status,
                rr.priority_level AS priority_level, rr.system_priority_score AS total_priority_score,
                r.name AS resource_name, u.full_name AS requester_name
         FROM resource_requests rr

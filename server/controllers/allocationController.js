@@ -4,7 +4,7 @@ const { createAllocation } = require('../services/allocationService');
 async function listAllocations(req, res) {
   try {
     const [rows] = await pool.query(
-      `SELECT a.id AS id, a.allocated_date AS allocated_date, a.start_time, a.end_time, a.status AS status,
+      `SELECT a.id AS id, a.resource_id, a.request_id, a.allocated_date AS allocated_date, a.start_time, a.end_time, a.status AS status,
               r.name AS resource_name, u.full_name AS allocated_to_name
        FROM allocations a
        LEFT JOIN resources r ON r.id = a.resource_id

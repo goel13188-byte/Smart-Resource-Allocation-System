@@ -140,11 +140,15 @@
             <p id="sectionSubtitle">Your resource command center.</p>
           </div>
           <div class="topbar-tools">
-            <label class="global-search" aria-label="Global resource search">
-              <span class="global-search-icon" data-icon="search"></span>
-              <input id="globalSearch" type="search" placeholder="Search resources..." autocomplete="off" />
-              <kbd>Ctrl K</kbd>
-            </label>
+            <div class="global-search-wrap">
+              <label class="global-search" aria-label="Search resources, requests, people and departments">
+                <span class="global-search-icon" data-icon="search"></span>
+                <input id="globalSearch" type="search" placeholder="Search resources, requests, people..." autocomplete="off" aria-controls="globalSearchResults" aria-expanded="false" />
+                <span class="search-clear hidden" id="globalSearchClear" aria-label="Clear search">×</span>
+                <kbd>Ctrl K</kbd>
+              </label>
+              <div id="globalSearchResults" class="global-search-results hidden" role="listbox" aria-label="Search results"></div>
+            </div>
             <span class="system-status"><i></i> System healthy</span>
             <div class="topbar-info">
               <span id="currentUserLabel">User</span>
@@ -309,6 +313,12 @@
                 <option>Critical</option>
               </select></label>
               <label>Deadline<input type="date" id="requestDeadline" /></label>
+            </div>
+            <div id="requestAvailabilityPanel" class="request-availability-panel" aria-live="polite">
+              <div class="availability-panel-placeholder">
+                <span class="availability-panel-icon">◌</span>
+                <div><strong>Availability check</strong><small>Select a resource, date and time to preview availability before submitting.</small></div>
+              </div>
             </div>
             <div class="button-row">
               <button type="submit" class="primary-btn">Submit Request</button>
