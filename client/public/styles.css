@@ -1416,3 +1416,35 @@ tbody tr:hover {
   .topbar-info { display: none; }
   .split-grid { grid-template-columns: 1fr; }
 }
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.hero-action {
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 11px;
+  padding: 10px 13px;
+  color: #dbe5f5;
+  background: rgba(255,255,255,.055);
+  cursor: pointer;
+  font-size: .78rem;
+  font-weight: 750;
+  backdrop-filter: blur(10px);
+}
+
+.hero-action:hover {
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.22);
+  transform: translateY(-1px);
+}
+
+.hero-action.primary {
+  color: white;
+  border-color: transparent;
+  background: linear-gradient(135deg,#6366f1,#7c3aed);
+  box-shadow: 0 10px 24px rgba(79,70,229,.25);
+}
