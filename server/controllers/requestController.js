@@ -2,6 +2,8 @@ const { pool } = require('../config/db');
 const { calculatePriorityScore, buildPriorityExplanation } = require('../services/priorityService');
 const { findConflictsForRequest } = require('../services/conflictService');
 const { isValidDate, isValidTime, toMinutes } = require('../utils/validation');
+const { createNotification, notifyOrganizationManagers } = require('../services/notificationService');
+const { writeAudit } = require('../services/auditService');
 
 async function listRequests(req, res) {
   try {
@@ -137,6 +139,34 @@ async function createRequest(req, res) {
         [req.user.organization_id, requestId, body.resource_id, conflictRows[0].id, body.requested_date, body.start_time, body.end_time]
       );
     }
+
+    await createNotification({
+      organizationId: req.user.organization_id,
+      userId: req.user.user_id,
+      title: conflictRows.length ? 'Resource request needs attention' : 'Resource request submitted',
+      message: conflictRows.length
+        ? `${body.project_name} was submitted, but a scheduling conflict was detected.`
+        : `${body.project_name} was submitted for ${body.requested_date} from ${String(body.start_time).slice(0,5)} to ${String(body.end_time).slice(0,5)}.`,
+      type: conflictRows.length ? 'warning' : 'success',
+      entityType: 'resource_request',
+      entityId: requestId,
+    });
+    await notifyOrganizationManagers({
+      organizationId: req.user.organization_id,
+      title: conflictRows.length ? 'New conflict requires review' : 'New resource request',
+      message: `${body.project_name} requested ${resource.name} for ${body.requested_date}.`,
+      type: conflictRows.length ? 'warning' : 'info',
+      entityType: 'resource_request',
+      entityId: requestId,
+    });
+    await writeAudit({
+      organizationId: req.user.organization_id,
+      userId: req.user.user_id,
+      action: conflictRows.length ? 'Created resource request with conflict' : 'Created resource request',
+      entityType: 'resource_request',
+      entityId: requestId,
+      details: { resource_id: body.resource_id, date: body.requested_date, start_time: body.start_time, end_time: body.end_time, priority: body.priority_level || 'Medium' },
+    });
 
     return res.status(201).json({
       success: true,
