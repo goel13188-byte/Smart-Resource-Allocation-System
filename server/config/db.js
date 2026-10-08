@@ -312,6 +312,46 @@ async function ensureSchema() {
   if (!proposalImageColumn.length) {
     await pool.query('ALTER TABLE resource_addition_requests ADD COLUMN image_name VARCHAR(150) NULL AFTER resource_type');
   }
+
+  const resourceLifecycleColumns = [
+    ['asset_tag', "VARCHAR(100) NULL"],
+    ['serial_number', "VARCHAR(150) NULL"],
+    ['vendor_name', "VARCHAR(150) NULL"],
+    ['purchase_date', "DATE NULL"],
+    ['warranty_until', "DATE NULL"],
+    ['lifecycle_status', "VARCHAR(40) DEFAULT 'Active'"],
+    ['last_maintenance_at', "DATETIME NULL"],
+    ['next_maintenance_at', "DATETIME NULL"],
+  ];
+  for (const [column, definition] of resourceLifecycleColumns) {
+    const [rows] = await pool.query("SHOW COLUMNS FROM resources LIKE ?", [column]);
+    if (!rows.length) await pool.query(`ALTER TABLE resources ADD COLUMN ${column} ${definition}`);
+  }
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS maintenance_tickets (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      organization_id INT NOT NULL,
+      resource_id INT NOT NULL,
+      requester_id INT,
+      assigned_to_id INT,
+      ticket_type VARCHAR(50) DEFAULT 'Preventive',
+      priority VARCHAR(30) DEFAULT 'Medium',
+      title VARCHAR(180) NOT NULL,
+      description TEXT,
+      status VARCHAR(40) DEFAULT 'Open',
+      scheduled_date DATE,
+      completed_at DATETIME NULL,
+      resolution_notes TEXT,
+      estimated_cost DECIMAL(12,2) DEFAULT 0,
+      actual_cost DECIMAL(12,2) DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (organization_id) REFERENCES organizations(id),
+      FOREIGN KEY (resource_id) REFERENCES resources(id),
+      FOREIGN KEY (requester_id) REFERENCES users(id),
+      FOREIGN KEY (assigned_to_id) REFERENCES users(id)
+    )
+  `);
 }
 
 async function seedReferenceData() {
