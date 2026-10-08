@@ -633,6 +633,36 @@ function renderResources() {
   });
 
   document.getElementById('resourceResultCount').textContent = `${resources.length} of ${state.resources.length} resources`;
+
+  const resourceCards = document.getElementById('resourceCardGrid');
+  if (resourceCards) {
+    resourceCards.innerHTML = resources.length ? resources.map((resource) => {
+      const available = ['Available', 'Partially Available'].includes(resource.status);
+      const statusClass = resource.status === 'Available' ? 'green' : ['Inactive', 'Maintenance'].includes(resource.status) ? 'orange' : 'blue';
+      return `
+        <article class="resource-card">
+          <div class="resource-card-image">${renderResourceImage(resource.image_name, resource.name, resource.resource_type_name)}</div>
+          <div class="resource-card-body">
+            <div class="resource-card-topline">
+              <span class="tag ${statusClass}">${escapeHtml(resource.status || 'Unknown')}</span>
+              <span class="resource-card-code">${escapeHtml(resource.code || '')}</span>
+            </div>
+            <h4>${escapeHtml(resource.name || 'Resource')}</h4>
+            <p class="resource-card-type">${escapeHtml(resource.resource_type_name || 'General')} · ${escapeHtml(resource.department_name || 'Unassigned')}</p>
+            <div class="resource-card-meta">
+              <span><b>${Number(resource.quantity) || 0}</b> units</span>
+              <span><b>${Number(resource.capacity) || 0}</b> capacity</span>
+              <span>${escapeHtml(resource.location || 'Location not set')}</span>
+            </div>
+            <div class="resource-card-footer">
+              <span class="availability-dot ${available ? 'available' : 'unavailable'}"><i></i>${available ? 'Ready to request' : 'Not available'}</span>
+              <button class="resource-card-view" data-action="view-resource" data-id="${Number(resource.id)}">View resource →</button>
+            </div>
+          </div>
+        </article>`;
+    }).join('') : '<div class="empty-state resource-empty">No resources match your filters.</div>';
+  }
+
   const actions = (resource) => `
     <div class="action-group">
       <button class="action-btn" data-action="view-resource" data-id="${Number(resource.id)}" aria-label="View ${escapeHtml(resource.name)}">${iconMarkup('view')}<span>View</span></button>
@@ -706,6 +736,19 @@ function renderResourceAdditionRequests() {
 }
 
 function renderRequests() {
+  const requestSummary = document.getElementById('requestSummaryStrip');
+  if (requestSummary) {
+    const pending = state.requests.filter((r) => ['Pending', 'Under Review'].includes(r.status)).length;
+    const approved = state.requests.filter((r) => ['Approved', 'Allocated'].includes(r.status)).length;
+    const high = state.requests.filter((r) => ['High', 'Critical'].includes(r.priority_level)).length;
+    const conflicts = state.requests.filter((r) => String(r.status || '').toLowerCase().includes('conflict')).length;
+    requestSummary.innerHTML = [
+      ['PENDING DECISIONS', pending, 'Requests waiting for review', 'violet'],
+      ['APPROVED / ALLOCATED', approved, 'Requests moving forward', 'green'],
+      ['HIGH PRIORITY', high, 'High-impact demand', 'amber'],
+      ['CONFLICTING', conflicts, 'Needs resolution', 'red'],
+    ].map(([label, value, note, tone]) => `<div class="operation-summary-card ${tone}"><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  }
   const rows = state.requests.map((request) => {
     const isOpen = !['Approved', 'Rejected', 'Allocated', 'Completed', 'Cancelled'].includes(request.status);
     const approvalActions = state.authority.canDecideRequests && isOpen
@@ -726,6 +769,20 @@ function renderRequests() {
 }
 
 function renderAllocations() {
+  const allocationSummary = document.getElementById('allocationSummaryStrip');
+  if (allocationSummary) {
+    const scheduled = state.allocations.filter((a) => !['Cancelled', 'Rejected'].includes(a.status)).length;
+    const today = new Date().toISOString().slice(0, 10);
+    const todayCount = state.allocations.filter((a) => String(a.allocated_date || '').slice(0, 10) === today).length;
+    const active = state.allocations.filter((a) => String(a.status || '').toLowerCase().includes('active')).length;
+    const resourcesUsed = new Set(state.allocations.map((a) => a.resource_name).filter(Boolean)).size;
+    allocationSummary.innerHTML = [
+      ['SCHEDULED', scheduled, 'Committed allocation slots', 'violet'],
+      ['TODAY', todayCount, 'Allocation slots today', 'cyan'],
+      ['ACTIVE', active, 'Currently in progress', 'green'],
+      ['RESOURCES USED', resourcesUsed, 'Distinct resources allocated', 'amber'],
+    ].map(([label, value, note, tone]) => `<div class="operation-summary-card ${tone}"><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  }
   const rows = state.allocations.map((allocation) => `
     <tr>
       <td>${allocation.resource_name || 'N/A'}</td>
@@ -739,6 +796,19 @@ function renderAllocations() {
 }
 
 function renderConflicts() {
+  const conflictSummary = document.getElementById('conflictSummaryStrip');
+  if (conflictSummary) {
+    const open = state.conflicts.filter((c) => ['Open', 'Under Review'].includes(c.status)).length;
+    const critical = state.conflicts.filter((c) => String(c.severity || '').toLowerCase() === 'critical').length;
+    const high = state.conflicts.filter((c) => String(c.severity || '').toLowerCase() === 'high').length;
+    const resolved = state.conflicts.filter((c) => String(c.status || '').toLowerCase() === 'resolved').length;
+    conflictSummary.innerHTML = [
+      ['OPEN', open, 'Conflicts needing attention', 'red'],
+      ['CRITICAL', critical, 'Immediate operational risk', 'critical'],
+      ['HIGH', high, 'High-priority collisions', 'amber'],
+      ['RESOLVED', resolved, 'Already handled', 'green'],
+    ].map(([label, value, note, tone]) => `<div class="operation-summary-card ${tone}"><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
+  }
   const rows = state.conflicts.map((conflict) => {
     const canAct = state.authority.canDecideRequests && ['Open', 'Under Review'].includes(conflict.status);
     const actions = canAct
