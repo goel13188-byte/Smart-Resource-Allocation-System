@@ -345,14 +345,7 @@ function renderGlobalSearchResults(query) {
   clear?.classList.toggle('hidden', !cleanQuery);
 
   if (!cleanQuery) {
-    panel.innerHTML = `
-      <div class="search-empty">
-        <span class="search-empty-key">⌕</span>
-        <div><strong>Search your workspace</strong><small>Find resources, requests, people and departments.</small></div>
-      </div>`;
-    panel.classList.remove('hidden');
-    input.setAttribute('aria-expanded', 'true');
-    globalSearchActiveIndex = -1;
+    closeGlobalSearch();
     return;
   }
 
@@ -1269,7 +1262,7 @@ function renderConflicts() {
     const open = state.conflicts.filter((c) => ['Open', 'Under Review'].includes(c.status)).length;
     const critical = state.conflicts.filter((c) => String(c.severity || '').toLowerCase() === 'critical').length;
     const high = state.conflicts.filter((c) => String(c.severity || '').toLowerCase() === 'high').length;
-    const resolved = state.conflicts.filter((c) => String(c.status || '').toLowerCase() === 'resolved').length;
+    const resolved = state.conflicts.filter((c) => ['Resolved', 'Rejected', 'Rescheduled'].includes(c.status)).length;
     conflictSummary.innerHTML = [
       ['OPEN', open, 'Conflicts needing attention', 'red'],
       ['CRITICAL', critical, 'Immediate operational risk', 'critical'],
@@ -1278,48 +1271,101 @@ function renderConflicts() {
     ].map(([label, value, note, tone]) => `<div class="operation-summary-card ${tone}"><span>${label}</span><strong>${value}</strong><small>${note}</small></div>`).join('');
   }
   const rows = state.conflicts.map((conflict) => {
-    const canAct = state.authority.canDecideRequests && ['Open', 'Under Review'].includes(conflict.status);
-    const actions = canAct
-      ? `<div class="action-group"><button class="action-btn action-approve" data-action="resolve-conflict" data-status="Resolved" data-id="${conflict.id}">Resolve</button><button class="action-btn action-reject" data-action="resolve-conflict" data-status="Rejected" data-id="${conflict.id}">Reject Request</button></div>`
-      : '';
-    return `
-      <tr>
-        <td>${conflict.resource_name || 'N/A'}</td>
-        <td>${conflict.conflict_type || 'Overlap'}</td>
-        <td>${conflict.severity || 'High'}</td>
-        <td>${conflict.status || 'Open'}</td>
-        <td>${conflict.description || 'Conflict detected'}${conflict.conflicting_project ? `<br><small>${conflict.conflicting_project}</small>` : ''}</td>
-        <td>${actions}</td>
-      </tr>
-    `;
+    const severity = String(conflict.severity || 'Medium');
+    const riskScore = Number(conflict.risk_score || 0);
+    const status = String(conflict.status || 'Open');
+    const alternatives = Array.isArray(conflict.alternatives) ? conflict.alternatives : [];
+    const canAct = state.authority.canDecideRequests && ['Open', 'Under Review'].includes(status);
+    const alternativeButtons = alternatives.slice(0, 2).map((resource) => `<button class="action-btn action-approve action-alternative" data-action="reassign-conflict" data-id="${conflict.id}" data-resource-id="${resource.id}">Use ${escapeHtml(resource.name)}</button>`).join('');
+    const actions = canAct ? `<div class="action-group">${alternativeButtons}<button class="action-btn action-approve" data-action="resolve-conflict" data-status="Resolved" data-id="${conflict.id}">Resolve</button><button class="action-btn action-reject" data-action="resolve-conflict" data-status="Rejected" data-id="${conflict.id}">Reject</button></div>` : '<span class="readonly-action">Recorded</span>';
+    const alternativesText = alternatives.length ? alternatives.map((item) => `${escapeHtml(item.name)} · ${escapeHtml(item.location || 'Available')}`).join(' • ') : 'No safe alternative found in this time window.';
+    return `<tr class="conflict-row">
+      <td><strong>${escapeHtml(conflict.resource_name || 'N/A')}</strong><small class="table-subline">${escapeHtml(conflict.project_name || 'Resource request')} · ${escapeHtml(conflict.requester_name || 'Requester')}</small></td>
+      <td><span class="risk-score ${riskScore >= 85 ? 'high' : riskScore >= 60 ? 'medium' : 'low'}"><b>${riskScore}</b><small>/100</small></span></td>
+      <td><span class="severity-badge ${severity.toLowerCase()}">${escapeHtml(severity)}</span></td>
+      <td><span class="status-badge ${status.toLowerCase().replace(/\s+/g, '-')}">${escapeHtml(status)}</span></td>
+      <td><div class="conflict-intelligence"><strong>${escapeHtml(conflict.suggested_action || 'Review timing and priority.')}</strong><small>${escapeHtml(conflict.description || 'Scheduling collision detected.')}</small><span><b>Alternatives:</b> ${alternativesText}</span></div></td>
+      <td>${actions}</td>
+    </tr>`;
   }).join('');
   document.getElementById('conflictsTableBody').innerHTML = rows || '<tr><td colspan="6">No conflicts found.</td></tr>';
 }
-
 function renderMembers() {
-  const rows = state.members.map((member) => `
-    <tr>
-      <td>${member.full_name}</td>
-      <td>${member.member_code}</td>
-      <td>${member.email}</td>
-      <td>${member.role}</td>
-      <td>${member.status}</td>
-    </tr>
-  `).join('');
-  document.getElementById('membersTableBody').innerHTML = rows || '<tr><td colspan="5">No members found.</td></tr>';
+  const count = document.getElementById('membersResultCount');
+  if (count) count.textContent = `${state.members.length} members`;
+  const rows = state.members.map((member) => {
+    const department = state.departments.find((item) => Number(item.id) === Number(member.department_id));
+    const canViewHistory = state.authority.canDecideRequests;
+    return `<tr class="clickable-row">
+      <td><strong>${escapeHtml(member.full_name)}</strong><small class="table-subline">${escapeHtml(member.designation || 'Organization member')}</small></td>
+      <td>${escapeHtml(member.member_code)}</td>
+      <td>${escapeHtml(department?.name || 'Unassigned')}</td>
+      <td>${escapeHtml(member.email)}</td>
+      <td><span class="role-badge">${escapeHtml(member.role)}</span></td>
+      <td><span class="status-badge ${String(member.status || '').toLowerCase()}">${escapeHtml(member.status || 'Active')}</span></td>
+      <td>${canViewHistory ? `<button class="table-link" data-action="view-member-history" data-id="${member.id}">View history ↗</button>` : '<span class="readonly-action">Manager only</span>'}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('membersTableBody').innerHTML = rows || '<tr><td colspan="7">No members found.</td></tr>';
 }
 
 function renderDepartments() {
-  const rows = state.departments.map((department) => `
-    <tr>
-      <td>${department.name}</td>
-      <td>${department.code || 'N/A'}</td>
-      <td>${department.status || 'Active'}</td>
-    </tr>
-  `).join('');
-  document.getElementById('departmentsTableBody').innerHTML = rows || '<tr><td colspan="3">No departments found.</td></tr>';
+  const count = document.getElementById('departmentsResultCount');
+  if (count) count.textContent = `${state.departments.length} departments`;
+  const rows = state.departments.map((department) => {
+    const members = state.members.filter((item) => Number(item.department_id) === Number(department.id));
+    const resources = state.resources.filter((item) => Number(item.department_id) === Number(department.id));
+    const canViewHistory = state.authority.canDecideRequests;
+    return `<tr class="clickable-row">
+      <td><strong>${escapeHtml(department.name)}</strong></td>
+      <td>${escapeHtml(department.code || 'N/A')}</td>
+      <td>${escapeHtml(department.head_name || 'Department Lead')}</td>
+      <td><span class="metric-pill">${members.length}</span></td>
+      <td><span class="metric-pill">${resources.length}</span></td>
+      <td><span class="status-badge ${String(department.status || '').toLowerCase()}">${escapeHtml(department.status || 'Active')}</span></td>
+      <td>${canViewHistory ? `<button class="table-link" data-action="view-department-history" data-id="${department.id}">Open intelligence ↗</button>` : '<span class="readonly-action">Manager only</span>'}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('departmentsTableBody').innerHTML = rows || '<tr><td colspan="7">No departments found.</td></tr>';
 }
 
+function historySummaryCards(summary) {
+  return Object.entries(summary || {}).map(([key, value]) => {
+    const label = key.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+    return `<div class="history-stat"><span>${escapeHtml(label)}</span><strong>${Number(value || 0)}</strong></div>`;
+  }).join('');
+}
+
+function renderHistoryTable(title, columns, rows) {
+  const body = rows.length ? rows.map((row) => `<tr>${columns.map(([key, formatter]) => `<td>${formatter ? formatter(row[key], row) : escapeHtml(row[key] ?? '—')}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${columns.length}">No recorded ${title.toLowerCase()} yet.</td></tr>`;
+  return `<div class="history-table-block"><div class="history-table-heading"><strong>${escapeHtml(title)}</strong><span>${rows.length} records</span></div><div class="history-table-scroll"><table><thead><tr>${columns.map(([key]) => `<th>${escapeHtml(key.replace(/_/g, ' '))}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div></div>`;
+}
+
+async function handleViewMemberHistory(id) {
+  if (!state.authority.canDecideRequests) return showToast('Member history is available to managers and organization leaders.', 'error');
+  try {
+    const response = await apiFetch(`/api/users/${Number(id)}/history`);
+    const data = response.data;
+    document.getElementById('entityHistoryKicker').textContent = 'MEMBER 360°';
+    document.getElementById('entityHistoryTitle').textContent = data.profile.full_name;
+    document.getElementById('entityHistorySubtitle').textContent = `${data.profile.designation || data.profile.role} · ${data.profile.department_name || 'Unassigned'} · ${data.profile.member_code}`;
+    document.getElementById('entityHistoryContent').innerHTML = `<div class="history-profile"><div><span>Email</span><strong>${escapeHtml(data.profile.email)}</strong></div><div><span>Role</span><strong>${escapeHtml(data.profile.role)}</strong></div><div><span>Access</span><strong>${escapeHtml(data.profile.access_level || 'Member')}</strong></div><div><span>Status</span><strong>${escapeHtml(data.profile.status)}</strong></div></div><div class="history-stats">${historySummaryCards(data.summary)}</div>${renderHistoryTable('Resource requests', [['project_name',null],['resource_name',null],['requested_date',null],['priority_level',null],['status',(v)=>`<span class="status-badge ${String(v).toLowerCase()}">${escapeHtml(v)}</span>`]], data.requests)}${renderHistoryTable('Past allocations', [['project_name',null],['resource_name',null],['allocated_date',null],['start_time',(v)=>escapeHtml(String(v || '').slice(0,5))],['status',null]], data.allocations)}${renderHistoryTable('Conflict history', [['resource_name',null],['project_name',null],['severity',(v)=>`<span class="severity-badge ${String(v).toLowerCase()}">${escapeHtml(v)}</span>`],['status',null],['description',null]], data.conflicts)}${renderHistoryTable('Maintenance involvement', [['resource_name',null],['title',null],['priority',null],['status',null],['scheduled_date',null]], data.maintenance)}${renderHistoryTable('Audit activity', [['created_at',(v)=>escapeHtml(new Date(v).toLocaleString())],['action',null],['entity_type',null],['details',null]], data.audit)}`;
+    document.getElementById('entityHistoryDialog').showModal();
+  } catch (error) { showToast(error.message || 'Unable to load member history.', 'error'); }
+}
+
+async function handleViewDepartmentHistory(id) {
+  if (!state.authority.canDecideRequests) return showToast('Department intelligence is available to managers and organization leaders.', 'error');
+  try {
+    const response = await apiFetch(`/api/departments/${Number(id)}/history`);
+    const data = response.data;
+    document.getElementById('entityHistoryKicker').textContent = 'DEPARTMENT 360°';
+    document.getElementById('entityHistoryTitle').textContent = data.department.name;
+    document.getElementById('entityHistorySubtitle').textContent = `${data.department.code || 'No code'} · ${data.department.head_name || 'Department Lead'}`;
+    document.getElementById('entityHistoryContent').innerHTML = `<div class="history-profile"><div><span>Code</span><strong>${escapeHtml(data.department.code || '—')}</strong></div><div><span>Head</span><strong>${escapeHtml(data.department.head_name || 'Department Lead')}</strong></div><div><span>Status</span><strong>${escapeHtml(data.department.status)}</strong></div></div><div class="history-stats">${historySummaryCards(data.summary)}</div>${renderHistoryTable('Department members', [['full_name',null],['member_code',null],['role',null],['status',null]], data.members)}${renderHistoryTable('Department resources', [['name',null],['resource_type_name',null],['location',null],['status',null],['capacity',null]], data.resources)}${renderHistoryTable('Resource requests', [['project_name',null],['requester_name',null],['resource_name',null],['requested_date',null],['status',null]], data.requests)}${renderHistoryTable('Resource allocations', [['project_name',null],['resource_name',null],['allocated_to_name',null],['allocated_date',null],['status',null]], data.allocations)}${renderHistoryTable('Conflict history', [['resource_name',null],['project_name',null],['requester_name',null],['severity',(v)=>`<span class="severity-badge ${String(v).toLowerCase()}">${escapeHtml(v)}</span>`],['status',null]], data.conflicts)}${renderHistoryTable('Maintenance', [['resource_name',null],['title',null],['priority',null],['status',null]], data.maintenance)}`;
+    document.getElementById('entityHistoryDialog').showModal();
+  } catch (error) { showToast(error.message || 'Unable to load department history.', 'error'); }
+}
 function renderPriorities() {
   const rows = state.priorities.map((priority) => `
     <tr>
@@ -1513,8 +1559,8 @@ function addGlobalEventHandlers() {
   const globalSearchResults = document.getElementById('globalSearchResults');
   const globalSearchClear = document.getElementById('globalSearchClear');
 
-  globalSearch?.addEventListener('focus', () => renderGlobalSearchResults(globalSearch.value));
-  globalSearch?.addEventListener('input', (event) => renderGlobalSearchResults(event.target.value));
+  globalSearch?.addEventListener('focus', () => { if (globalSearch.value.trim()) renderGlobalSearchResults(globalSearch.value); else closeGlobalSearch(); });
+  globalSearch?.addEventListener('input', (event) => { if (event.target.value.trim()) renderGlobalSearchResults(event.target.value); else closeGlobalSearch(); });
 
   globalSearch?.addEventListener('keydown', (event) => {
     const options = [...(globalSearchResults?.querySelectorAll('.search-result') || [])];
@@ -1544,8 +1590,8 @@ function addGlobalEventHandlers() {
   globalSearchClear?.addEventListener('click', () => {
     if (!globalSearch) return;
     globalSearch.value = '';
+    closeGlobalSearch();
     globalSearch.focus();
-    renderGlobalSearchResults('');
   });
 
   globalSearchResults?.addEventListener('click', (event) => {
@@ -1571,6 +1617,11 @@ function addGlobalEventHandlers() {
     button.addEventListener('click', () => selectAuthTab(button.dataset.target));
   });
 
+  document.getElementById('closeEntityHistory')?.addEventListener('click', () => document.getElementById('entityHistoryDialog')?.close());
+  document.getElementById('closeEntityHistoryFooter')?.addEventListener('click', () => document.getElementById('entityHistoryDialog')?.close());
+  document.getElementById('entityHistoryDialog')?.addEventListener('click', (event) => {
+    if (event.target === document.getElementById('entityHistoryDialog')) document.getElementById('entityHistoryDialog').close();
+  });
   document.getElementById('notificationTrigger')?.addEventListener('click', (event) => {
     event.stopPropagation();
     document.getElementById('notificationPanel')?.classList.toggle('hidden');
@@ -1731,10 +1782,24 @@ function addGlobalEventHandlers() {
     if (action === 'delete-resource') handleDeleteResource(id);
     if (action === 'decide-request') handleRequestDecision(id, decision);
     if (action === 'resolve-conflict') handleConflictDecision(id, status);
+    if (action === 'reassign-conflict') handleConflictReassign(id, target.dataset.resourceId);
+    if (action === 'view-member-history') handleViewMemberHistory(id);
+    if (action === 'view-department-history') handleViewDepartmentHistory(id);
     if (action === 'complete-maintenance') handleMaintenanceDecision(id, 'Completed');
     if (action === 'progress-maintenance') handleMaintenanceDecision(id, 'In Progress');
     if (action === 'review-resource-addition') handleResourceAdditionReview(id, decision);
   });
+}
+
+async function handleConflictReassign(id, resourceId) {
+  if (!state.authority.canDecideRequests) return showToast('Only managers can reassign conflict requests.', 'error');
+  const resource = state.resources.find((item) => Number(item.id) === Number(resourceId));
+  if (!resource || !confirm(`Move this request to ${resource.name} and resolve the conflict?`)) return;
+  try {
+    await apiFetch(`/api/conflicts/${Number(id)}/reassign`, { method: 'PUT', body: JSON.stringify({ resource_id: Number(resourceId) }) });
+    await loadProtectedData();
+    showToast(`Conflict resolved using ${resource.name}.`, 'success');
+  } catch (error) { showToast(error.message || 'Unable to reassign this conflict.', 'error'); }
 }
 
 async function handleMaintenanceDecision(id, status) {
