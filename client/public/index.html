@@ -455,27 +455,33 @@
           <div id="conflictSummaryStrip" class="conflict-summary-strip"></div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Resource</th><th>Type</th><th>Severity</th><th>Status</th><th>Details</th><th>Manager Actions</th></tr></thead>
+              <thead><tr><th>Resource</th><th>Risk</th><th>Severity</th><th>Status</th><th>Resolution intelligence</th><th>Manager actions</th></tr></thead>
               <tbody id="conflictsTableBody"></tbody>
             </table>
           </div>
         </section>
 
         <section id="members" class="panel-section">
-          <div class="section-header"><h3>Members</h3></div>
+          <div class="section-header">
+            <div><span class="context-kicker">PEOPLE & ACCESS</span><h3>Members</h3><p class="section-subtitle">Click a member to inspect their request, allocation, conflict and activity history.</p></div>
+            <span id="membersResultCount" class="section-count"></span>
+          </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Name</th><th>Member Code</th><th>Email</th><th>Role</th><th>Status</th></tr></thead>
+              <thead><tr><th>Name</th><th>Member Code</th><th>Department</th><th>Email</th><th>Role</th><th>Status</th><th>History</th></tr></thead>
               <tbody id="membersTableBody"></tbody>
             </table>
           </div>
         </section>
 
         <section id="departments" class="panel-section">
-          <div class="section-header"><h3>Departments</h3></div>
+          <div class="section-header">
+            <div><span class="context-kicker">ORGANIZATIONAL INTELLIGENCE</span><h3>Departments</h3><p class="section-subtitle">Click a department to inspect its resources, demand, allocations and conflict history.</p></div>
+            <span id="departmentsResultCount" class="section-count"></span>
+          </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Name</th><th>Code</th><th>Status</th></tr></thead>
+              <thead><tr><th>Department</th><th>Code</th><th>Head</th><th>Members</th><th>Resources</th><th>Status</th><th>History</th></tr></thead>
               <tbody id="departmentsTableBody"></tbody>
             </table>
           </div>
@@ -523,6 +529,16 @@
         <button type="button" class="secondary-btn" id="closeResourceDetailFooter">Close</button>
       </div>
     </dialog>
+
+    <dialog id="entityHistoryDialog" class="entity-history-dialog" aria-labelledby="entityHistoryTitle">
+      <div class="entity-history-header">
+        <div><span id="entityHistoryKicker">OPERATIONAL PROFILE</span><h2 id="entityHistoryTitle">History</h2><p id="entityHistorySubtitle"></p></div>
+        <button type="button" class="icon-button" id="closeEntityHistory" aria-label="Close history">×</button>
+      </div>
+      <div id="entityHistoryContent" class="entity-history-content"></div>
+      <div class="button-row entity-history-footer"><button type="button" class="secondary-btn" id="closeEntityHistoryFooter">Close</button></div>
+    </dialog>
+
     <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
     <script src="app.js"></script>
