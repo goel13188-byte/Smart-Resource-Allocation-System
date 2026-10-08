@@ -301,6 +301,22 @@ async function ensureSchema() {
       details TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS notifications (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      organization_id INT NOT NULL,
+      user_id INT NOT NULL,
+      title VARCHAR(180) NOT NULL,
+      message TEXT NOT NULL,
+      type VARCHAR(40) DEFAULT 'info',
+      entity_type VARCHAR(80),
+      entity_id INT,
+      is_read TINYINT(1) DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      read_at TIMESTAMP NULL,
+      FOREIGN KEY (organization_id) REFERENCES organizations(id),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    );
   `;
 
   const statements = schema.split(';').filter((statement) => statement.trim());
